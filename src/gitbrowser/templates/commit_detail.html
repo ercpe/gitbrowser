@@ -1,5 +1,10 @@
 {% extends "template.html" %}
 {% load humanize %}
+{% load highlight %}
+
+{% block styles %}
+<link href="{% url 'styles' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}{{commit.summary}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
@@ -19,7 +24,7 @@
 	</p>
 
 	{% for change in commit.changes %}
-		<pre>{{change.diff}}</pre>
+		{{change.diff|highlight:"text/x-patch"|safe}}
 	{% endfor %}
 
 {% endblock %}

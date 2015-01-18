@@ -13,7 +13,9 @@ from git.objects.blob import Blob
 ###
 from git.objects.commit import Commit
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
-Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True)
+Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
+								if self.parents else \
+								self.diff(None, create_patch=True)
 Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
 
 
@@ -23,6 +25,7 @@ Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.aut
 ACCEPT_MIMETYPES_LAMBDAS = (
 	lambda mt: mt.startswith('text/'),
 	lambda mt: mt.startswith('application/xml'),
+	lambda mt: mt.startswith('application/x-javascript'),
 )
 Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS))
 Blob.content = lambda self: self.data_stream.read()

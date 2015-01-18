@@ -1,5 +1,10 @@
 {% extends "repository_template.html" %}
 {% load humanize %}
+{% load highlight %}
+
+{% block styles %}
+<link href="{% url 'styles' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}{{blob.path}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
@@ -13,7 +18,7 @@
 	</p>
 
 	{% if blob.can_display %}
-		<pre>{{blob.content}}</pre>
+		{{blob.content|highlight:blob.mime_type|safe}}
 	{% else %}
 		<p>I'm sorry, i cannot display files with <code>{{blob.mime_type}}</code>.</p>
 	{% endif %}
