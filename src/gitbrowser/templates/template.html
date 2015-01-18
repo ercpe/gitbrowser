@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		{% block whole_title %}<title>{% block title %}Repository Listing{% endblock %}</title>{% endblock %}
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		{% block robots %}<meta name="robots" content="index,follow,noarchive" />{% endblock %}
+
+		{% block head %}{% endblock %}
+
+		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="{{STATIC_URL}}site.css" rel="stylesheet">
+		{% block styles %}{% endblock %}
+		{% block scripts %}{% endblock %}
+	</head>
+	<body>
+		<div class="container">
+			<div class="wrapper">
+				{% block content %}{% endblock %}
+
+			</div>
+		</div>
+	</body>
+</html>

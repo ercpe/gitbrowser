@@ -1,0 +1,8 @@
+{% extends "template.html" %}
+
+{% block title %}{{blob.path}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+
+{% block content %}
+	<h1>{{blob.path}}</h1>
+
+{% endblock %}

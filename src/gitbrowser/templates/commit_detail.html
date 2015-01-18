@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+
+{% block title %}{{commit.summary}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+
+{% block content %}
+
+	<h1>{{repository}}</h1>
+
+	<blockquote>{{commit.summary}}</blockquote>
+	<p>{{commit.message}}</p>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+	<table class="table table-condensed">
+		{% for repo in repositories %}
+
+			<tr>
+				<td><a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo}}</a></td>
+				<td class="text-muted">{{repo.description}}</td>
+			</tr>
+
+		{% empty %}
+			<tr>
+				<td>
+					<p>No repositories found.</p>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

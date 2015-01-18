@@ -1,0 +1,3 @@
+html { overflow-y: scroll; }
+
+.tree-table .tree-item-name { white-space: nowrap; }
