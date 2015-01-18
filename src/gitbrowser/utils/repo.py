@@ -11,7 +11,7 @@ from git.objects.blob import Blob
 ### Monkey patching of git.objects.commit.Commit
 ###
 def message_without_summary(self):
-	return self.message[len(self.summary):]
+	return self.message[len(self.summary):].strip()
 
 def changes(self):
 	return self.parents[0].diff(self, create_patch=True)

@@ -7,7 +7,9 @@
 	<h1>{{repository}}</h1>
 
 	<blockquote>{{commit.summary}}</blockquote>
-	<p>{{commit.message_without_summary|linebreaks}}</p>
+	{% if commit.message_without_summary %}
+		<p class="commit-message">{{commit.message_without_summary|linebreaks}}</p>
+	{% endif %}
 
 	{% for change in commit.changes %}
 		<pre>{{change.diff}}</pre>
