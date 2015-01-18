@@ -18,7 +18,7 @@
 	</p>
 
 	{% if blob.can_display %}
-		{{blob.content|highlight:blob.mime_type|safe}}
+		{% highlight blob.content blob.mime_type blob.name %}
 	{% else %}
 		<p>I'm sorry, i cannot display files with <code>{{blob.mime_type}}</code>.</p>
 	{% endif %}

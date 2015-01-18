@@ -24,7 +24,7 @@
 	</p>
 
 	{% for change in commit.changes %}
-		{{change.diff|highlight:"text/x-patch"|safe}}
+		{% highlight change.diff "text/x-patch" %}
 	{% endfor %}
 
 {% endblock %}
