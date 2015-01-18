@@ -24,9 +24,9 @@ ACCEPT_MIMETYPES_LAMBDAS = (
 	lambda mt: mt.startswith('text/'),
 	lambda mt: mt.startswith('application/xml'),
 )
-
 Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS))
 Blob.content = lambda self: self.data_stream.read()
+Blob.latest_commit = lambda self: self.repo.iter_commits(paths=self.path, max_count=1).next()
 
 
 class GitRepository(object):
@@ -101,4 +101,4 @@ class GitRepository(object):
 		# TODO: This should be improved - hitting the commits for every item
 		# 		in the tree is tooooo slow
 		logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
-		return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path).next()
+		return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
