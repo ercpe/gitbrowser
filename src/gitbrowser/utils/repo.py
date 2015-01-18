@@ -70,6 +70,8 @@ class GitRepository(object):
 		def inner():
 			l = []
 			for chunk in self.list_filter_path.split('/'):
+				if not chunk:
+					continue
 				l.append(chunk)
 				yield '/'.join(l), chunk
 		return list(inner())
