@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load humanize %}
 
 {% block title %}{{commit.summary}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
@@ -10,6 +11,12 @@
 	{% if commit.message_without_summary %}
 		<p class="commit-message">{{commit.message_without_summary|linebreaks}}</p>
 	{% endif %}
+
+	<p>
+		<a href="mailto:{{commit.author.email}}">{{commit.author}}</a> on
+		<time datetime="{{commit.authored_datetime|date:'c'}}"
+				title="{{commit.authored_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
+	</p>
 
 	{% for change in commit.changes %}
 		<pre>{{change.diff}}</pre>

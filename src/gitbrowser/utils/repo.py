@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import datetime
 
 import git
 from git.objects.tree import Tree
@@ -10,27 +11,21 @@ from git.objects.blob import Blob
 ###
 ### Monkey patching of git.objects.commit.Commit
 ###
-def message_without_summary(self):
-	return self.message[len(self.summary):].strip()
-
-def changes(self):
-	return self.parents[0].diff(self, create_patch=True)
-
 from git.objects.commit import Commit
-Commit.message_without_summary = message_without_summary
-Commit.changes = changes
+Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
+Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True)
+Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
 
 
 ###
 ### Monkey patching of git.objects.blob.Blob
 ###
-
 ACCEPT_MIMETYPES_LAMBDAS = (
 	lambda mt: mt.startswith('text/'),
 	lambda mt: mt.startswith('application/xml'),
 )
 
-Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS)) # self.mime_type in ['text/plain']
+Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS))
 Blob.content = lambda self: self.data_stream.read()
 
 
