@@ -67,6 +67,15 @@ class GitRepository(object):
 	def description(self):
 		return self.get_config_value('gitweb', 'description', '')
 
+	@property
+	def list_filter_path_items(self):
+		def inner():
+			l = []
+			for chunk in self.list_filter_path.split('/'):
+				l.append(chunk)
+				yield '/'.join(l), chunk
+		return list(inner())
+
 	def get_config_value(self, section, option, default=None):
 		return self.repo_config.get_value(section, option, default)
 

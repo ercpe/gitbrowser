@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+
+{% block content %}
+	<h1>{{repository}}</h1>
+
+	{% if repository.list_filter_path_items|length > 0 %}
+		<ol class="breadcrumb">
+			<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}" title="Browse repository root">{{repository.name}}</a></li>
+			{% for path, label in repository.list_filter_path_items %}
+				{% if forloop.last %}
+					<li class="active">{{label}}</li>
+				{% else %}
+					<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
+							title="Browse {{path}}">{{label}}</a></li>
+				{% endif %}
+			{% endfor %}
+		</ol>
+	{% endif %}
+
+	{% block repository_content %}
+	{% endblock %}
+{% endblock %}
