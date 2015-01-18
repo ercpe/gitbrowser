@@ -12,7 +12,7 @@ from git.objects.blob import Blob
 ### Monkey patching of git.objects.commit.Commit
 ###
 from git.objects.commit import Commit
-from repoze import lru
+from gitdb.exc import BadObject
 from repoze.lru import lru_cache
 
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
@@ -94,7 +94,11 @@ class GitRepository(object):
 		self.list_filter_path = path.strip('/')
 
 	def items(self):
-		tree = self.repo.tree(self.list_filter_ref)
+		try:
+			tree = self.repo.tree(self.list_filter_ref)
+		except BadObject as bo:
+			logging.warning("Got %s - is the repository empty?" % bo)
+			return
 
 		if self.list_filter_path:
 			subtree = tree[self.list_filter_path]
