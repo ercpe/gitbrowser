@@ -22,6 +22,9 @@ class GitRepository(object):
 	def __unicode__(self):
 		return self.relative_path
 
+	def __repr__(self):
+		return self.relative_path
+
 	@property
 	def repo(self):
 		if not self._repo_obj:
