@@ -5,4 +5,9 @@
 {% block content %}
 	<h1>{{blob.path}}</h1>
 
+	{% if blob.can_display %}
+		<pre>{{blob.content}}</pre>
+	{% else %}
+		<p>I'm sorry, i cannot display files with <code>{{blob.mime_type}}</code>.</p>
+	{% endif %}
 {% endblock %}

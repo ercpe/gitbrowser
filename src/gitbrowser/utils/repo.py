@@ -4,6 +4,7 @@ import os
 
 import git
 from git.objects.tree import Tree
+from git.objects.blob import Blob
 
 
 ###
@@ -18,6 +19,19 @@ def changes(self):
 from git.objects.commit import Commit
 Commit.message_without_summary = message_without_summary
 Commit.changes = changes
+
+
+###
+### Monkey patching of git.objects.blob.Blob
+###
+
+ACCEPT_MIMETYPES_LAMBDAS = (
+	lambda mt: mt.startswith('text/'),
+	lambda mt: mt.startswith('application/xml'),
+)
+
+Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS)) # self.mime_type in ['text/plain']
+Blob.content = lambda self: self.data_stream.read()
 
 
 class GitRepository(object):
@@ -49,12 +63,12 @@ class GitRepository(object):
 	def repo_config(self):
 		return self.repo.config_reader('repository')
 
-	def get_config_value(self, section, option, default=None):
-		return self.repo_config.get_value(section, option, default)
-
 	@property
 	def description(self):
 		return self.get_config_value('gitweb', 'description', '')
+
+	def get_config_value(self, section, option, default=None):
+		return self.repo_config.get_value(section, option, default)
 
 	def set_list_filter(self, ref, path):
 		logging.info("Applying filter: ref=%s, path=%s" % (ref, path))
