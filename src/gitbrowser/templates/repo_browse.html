@@ -1,4 +1,5 @@
 {% extends "repository_template.html" %}
+{% load humanize %}
 
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
@@ -27,12 +28,15 @@
 									title="Browse {{item.name}}">{{item.name}}</a>
 						{% endif %}
 					</td>
-					<td class="text-muted">
+					<td class="text-muted tree-item-latest-commit">
 						<a class="text-muted"
 						   href="{% url 'commit' repository.relative_path commit.hexsha %}"
 						   title="{{commit.summary}}">{{commit.summary}}</a>
 					</td>
-					<td>date</td>
+					<td class="text-muted tree-item-latest-commit-date">
+						<time datetime="{{item.latest_commit.authored_datetime|date:'c'}}"
+							  title="{{item.latest_commit.authored_datetime}}">{{item.latest_commit.authored_datetime|naturaltime}}</time>
+					</td>
 				</tr>
 			{% endfor %}
 		</table>

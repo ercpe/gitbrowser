@@ -12,12 +12,17 @@ from git.objects.blob import Blob
 ### Monkey patching of git.objects.commit.Commit
 ###
 from git.objects.commit import Commit
+from repoze import lru
+from repoze.lru import lru_cache
+
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
 Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
 								if self.parents else \
 								self.diff(None, create_patch=True)
 Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
 
+
+latest_commit_patch = lru_cache(500)(lambda self: self.repo.iter_commits(paths=self.path, max_count=1).next())
 
 ###
 ### Monkey patching of git.objects.blob.Blob
@@ -29,8 +34,12 @@ ACCEPT_MIMETYPES_LAMBDAS = (
 )
 Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS))
 Blob.content = lambda self: self.data_stream.read()
-Blob.latest_commit = lambda self: self.repo.iter_commits(paths=self.path, max_count=1).next()
+Blob.latest_commit = latest_commit_patch
 
+###
+### Monkey patching of git.objects.blob.Truee
+###
+Tree.latest_commit = latest_commit_patch
 
 class GitRepository(object):
 

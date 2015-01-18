@@ -1,3 +1,4 @@
 html { overflow-y: scroll; }
 
 .tree-table .tree-item-name { white-space: nowrap; }
+td.tree-item-latest-commit-date { text-align: right; }
