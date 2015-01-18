@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 
 {% block content %}
-	<h1>{{repository}}</h1>
+	<h1>{{repository}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
 
 	<ol class="breadcrumb">
 		<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}" title="Browse repository root">{{repository.name}}</a></li>
