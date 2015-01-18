@@ -6,6 +6,20 @@ import git
 from git.objects.tree import Tree
 
 
+###
+### Monkey patching of git.objects.commit.Commit
+###
+def message_without_summary(self):
+	return self.message[len(self.summary):]
+
+def changes(self):
+	return self.parents[0].diff(self, create_patch=True)
+
+from git.objects.commit import Commit
+Commit.message_without_summary = message_without_summary
+Commit.changes = changes
+
+
 class GitRepository(object):
 
 	def __init__(self, fs_path, relative_path):

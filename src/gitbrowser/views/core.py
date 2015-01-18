@@ -56,7 +56,7 @@ class BrowseBlobView(TreeOperationMixin, DetailView):
 		return self.repository.items().next()[0]
 
 	def get_context_data(self, **kwargs):
-		return super(CommitDetailView, self).get_context_data(repository=self.repository)
+		return super(BrowseBlobView, self).get_context_data(repository=self.repository)
 
 
 class CommitDetailView(TreeOperationMixin, DetailView):
