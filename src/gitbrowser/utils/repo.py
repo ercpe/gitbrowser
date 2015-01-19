@@ -112,8 +112,7 @@ class GitRepository(object):
 			yield subtree, self.get_latest_commit(subtree)
 
 	def get_commit(self, commit_id):
-		for x in self.repo.iter_commits(rev=commit_id):
-			return x
+		return self.repo.commit(commit_id)
 
 	def get_latest_commit(self, item):
 		# TODO: This should be improved - hitting the commits for every item
