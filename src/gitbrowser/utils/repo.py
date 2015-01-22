@@ -53,6 +53,7 @@ class GitRepository(object):
 		self.list_filter_path = None
 
 		self._repo_obj = None
+		self._repo_can_list_commits = None
 
 	def __unicode__(self):
 		return self.relative_path
@@ -85,6 +86,14 @@ class GitRepository(object):
 				yield '/'.join(l), chunk
 		return list(inner())
 
+	@property
+	def can_list_commits(self):
+		if self._repo_can_list_commits is None:
+			self._repo_can_list_commits = len(list(self.repo.iter_commits(max_count=6000))) < 6000
+			if not self._repo_can_list_commits:
+				logging.warning("Disabling get_latest_commit() - repo is too large")
+		return self._repo_can_list_commits
+
 	def get_config_value(self, section, option, default=None):
 		return self.repo_config.get_value(section, option, default)
 
@@ -115,7 +124,10 @@ class GitRepository(object):
 		return self.repo.commit(commit_id)
 
 	def get_latest_commit(self, item):
-		# TODO: This should be improved - hitting the commits for every item
-		# 		in the tree is tooooo slow
-		logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
-		return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
+		# TODO: This should be improved - albeit it seems it's fast as we can get:
+		# https://github.com/gitpython-developers/GitPython/issues/240
+		if self.can_list_commits:
+			logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
+			return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
+		else:
+			return None

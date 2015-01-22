@@ -29,13 +29,17 @@
 						{% endif %}
 					</td>
 					<td class="text-muted tree-item-latest-commit">
-						<a class="text-muted"
-						   href="{% url 'commit' repository.relative_path commit.hexsha %}"
-						   title="{{commit.summary}}">{{commit.summary}}</a>
+						{% if commit %}
+							<a class="text-muted"
+							   href="{% url 'commit' repository.relative_path commit.hexsha %}"
+							   title="{{commit.summary}}">{{commit.summary}}</a>
+						{% endif %}
 					</td>
 					<td class="text-muted tree-item-latest-commit-date">
-						<time datetime="{{item.latest_commit.authored_datetime|date:'c'}}"
-							  title="{{item.latest_commit.authored_datetime}}">{{item.latest_commit.authored_datetime|naturaltime}}</time>
+						{% if commit %}
+							<time datetime="{{item.latest_commit.authored_datetime|date:'c'}}"
+								  title="{{item.latest_commit.authored_datetime}}">{{item.latest_commit.authored_datetime|naturaltime}}</time>
+						{% endif %}
 					</td>
 				</tr>
 			{% endfor %}
