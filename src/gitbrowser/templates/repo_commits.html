@@ -6,11 +6,13 @@
 
 {% block repository_content %}
 
-	<table class="table table-condensed tree-table">
+	<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList">
+		<meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
 		{% for commit in commits %}
 			<tr>
-				<td>
+				<td itemprop="itemListElement">
 					<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
+					   itemprop="url"
 					   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
 				</td>
 				<td class="text-muted tree-item-latest-commit-date">
