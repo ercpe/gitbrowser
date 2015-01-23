@@ -38,6 +38,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'django.contrib.humanize',
 	'gitbrowser',
+	'bootstrap3'
 )
 
 MIDDLEWARE_CLASSES = (

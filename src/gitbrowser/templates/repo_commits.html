@@ -1,0 +1,26 @@
+{% extends "repository_template.html" %}
+{% load humanize %}
+{% load bootstrap3 %}
+
+{% block title %}Commits in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+
+{% block repository_content %}
+
+	<table class="table table-condensed tree-table">
+		{% for commit in commits %}
+			<tr>
+				<td>
+					<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
+					   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
+				</td>
+				<td class="text-muted tree-item-latest-commit-date">
+					<time datetime="{{commit.committed_datetime|date:'c'}}"
+						  title="{{commit.committed_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	{% bootstrap_pagination commits %}
+
+{% endblock %}

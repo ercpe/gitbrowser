@@ -20,6 +20,7 @@ Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
 								if self.parents else \
 								self.diff(None, create_patch=True)
 Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
+Commit.committed_datetime = lambda self: datetime.datetime.fromtimestamp(self.committed_date)
 
 
 latest_commit_patch = lru_cache(500)(lambda self: self.repo.iter_commits(paths=self.path, max_count=1).next())
@@ -54,6 +55,8 @@ class GitRepository(object):
 
 		self._repo_obj = None
 		self._repo_can_list_commits = None
+
+		self._commit_list = None
 
 	def __unicode__(self):
 		return self.relative_path
@@ -94,6 +97,12 @@ class GitRepository(object):
 				logging.warning("Disabling get_latest_commit() - repo is too large")
 		return self._repo_can_list_commits
 
+	@property
+	def commit_list(self):
+		if not self._commit_list:
+			self._commit_list = CommitListWrapper(self.repo, self.list_filter_ref, self.list_filter_path)
+		return self._commit_list
+
 	def get_config_value(self, section, option, default=None):
 		return self.repo_config.get_value(section, option, default)
 
@@ -131,3 +140,30 @@ class GitRepository(object):
 			return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
 		else:
 			return None
+
+
+class CommitListWrapper(object):
+	def __init__(self, repo, filter_ref, filter_path):
+		self.repo = repo
+		self.filter_ref = filter_ref
+		self.filter_path = filter_path
+		self._iter_slice = None
+
+	def iter_slice(self, start, stop):
+		if self._iter_slice is None:
+			self._iter_slice = list(
+				self.repo.iter_commits(self.filter_ref, paths=self.filter_path, skip=start, max_count=stop-start)
+			)
+		return self._iter_slice
+
+	def __len__(self):
+		return len(list(self.repo.iter_commits(self.filter_ref, paths=self.filter_path)))
+
+	def __getitem__(self, item):
+		logging.info("Wrapper: __getitem__(item=%s)" % item)
+
+		if isinstance(item, int):
+			return self.iter_slice(None, None)[item]
+
+		logging.info("Slice for start %s, stop %s, step %s" % (item.start, item.stop, item.step))
+		return self.iter_slice(item.start, item.stop)

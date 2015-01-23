@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+from django.core.paginator import PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage
 from django.http.response import Http404
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
@@ -68,3 +70,25 @@ class CommitDetailView(TreeOperationMixin, DetailView):
 
 	def get_context_data(self, **kwargs):
 		return super(CommitDetailView, self).get_context_data(repository=self.repository)
+
+
+class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
+	template_name = 'repo_commits.html'
+
+	def get_context_data(self, **kwargs):
+		d = super(RepositoryCommitsListView, self).get_context_data(repository=self.repository)
+
+		paginator = Paginator(self.repository.commit_list, 25) # Show 25 contacts per page
+
+		page = self.request.GET.get('page')
+		try:
+			commits = paginator.page(page)
+		except PageNotAnInteger:
+			commits = paginator.page(1)
+		except EmptyPage:
+			commits = paginator.page(paginator.num_pages)
+
+		d['paginator'] = paginator
+		d['commits'] = commits
+		return d
+		#return render_to_response('list.html', {"contacts": contacts})

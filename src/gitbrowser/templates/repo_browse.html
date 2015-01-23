@@ -4,7 +4,6 @@
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block repository_content %}
-
 	{% if repository.items %}
 		<table class="table table-condensed tree-table">
 			{% if repository.list_filter_path_items|length > 0 %}
