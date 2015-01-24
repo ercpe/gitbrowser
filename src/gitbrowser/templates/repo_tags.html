@@ -7,11 +7,17 @@
 
 {% block repository_content %}
 
-	{% for tag in repository.tags %}
-		<h3>{{tag}} <small>{{tag.commit.summary}}</small></h3>
-		<p class="text-muted">{{tag.commit.committer}}, {{tag.commit.committed_datetime|time_tag}}</p>
-	{% empty %}
-		<p>This repository does not have any tags yet.</p>
-	{% endfor %}
+	<div itemscope itemtype="http://schema.org/ItemList">
+		<meta name="numberOfItems" content="{{repository.tags|length}}" />
+
+		{% for tag in repository.tags %}
+			<div itemprop="itemListElement">
+				<h3><span itemprop="name">{{tag}}</span> <small itemprop="description">{{tag.commit.summary}}</small></h3>
+				<p class="text-muted">{{tag.commit.committer}}, {{tag.commit.committed_datetime|time_tag}}</p>
+			</div>
+		{% empty %}
+			<p>This repository does not have any tags yet.</p>
+		{% endfor %}
+	</div>
 
 {% endblock %}
