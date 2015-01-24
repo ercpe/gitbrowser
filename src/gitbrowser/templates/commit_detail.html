@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load gb_tags %}
 {% load humanize %}
 {% load highlight %}
 
@@ -18,9 +19,7 @@
 	{% endif %}
 
 	<p>
-		<a href="mailto:{{commit.author.email}}">{{commit.author}}</a> on
-		<time datetime="{{commit.authored_datetime|date:'c'}}"
-				title="{{commit.authored_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
+		<a href="mailto:{{commit.author.email}}">{{commit.author}}</a> on {{commit.authored_datetime|time_tag}}
 	</p>
 
 	{% for change in commit.changes %}

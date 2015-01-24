@@ -1,4 +1,5 @@
 {% extends "repository_template.html" %}
+{% load gb_tags %}
 {% load humanize %}
 {% load bootstrap3 %}
 
@@ -7,7 +8,10 @@
 {% block repository_content %}
 
 	{% for tag in repository.tags %}
-		<p>{{tag}}</p>
+		<h3>{{tag}} <small>{{tag.commit.summary}}</small></h3>
+		<p class="text-muted">{{tag.commit.committer}}, {{tag.commit.committed_datetime|time_tag}}</p>
+	{% empty %}
+		<p>This repository does not have any tags yet.</p>
 	{% endfor %}
 
 {% endblock %}

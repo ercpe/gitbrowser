@@ -9,7 +9,6 @@ from pygments.util import ClassNotFound
 
 register = template.Library()
 
-
 @register.simple_tag(name='highlight')
 def pygments_highlight2(code, mime_type, filename=None):
 	if not code:

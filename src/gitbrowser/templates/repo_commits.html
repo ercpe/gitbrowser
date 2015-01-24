@@ -1,4 +1,5 @@
 {% extends "repository_template.html" %}
+{% load gb_tags %}
 {% load humanize %}
 {% load bootstrap3 %}
 
@@ -26,9 +27,7 @@
 							   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
 						</h4>
 						<p itemprop="description" class="text-muted">
-							{{commit.committer}},
-							<time datetime="{{commit.committed_datetime|date:'c'}}"
-								  title="{{commit.committed_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
+							{{commit.committer}}, {{commit.committed_datetime|time_tag}}
 						</p>
 					</div>
 				</li>
