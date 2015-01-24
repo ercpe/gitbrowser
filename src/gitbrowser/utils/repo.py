@@ -2,6 +2,8 @@
 import logging
 import os
 import datetime
+from django.core.cache import get_cache
+from django.core.cache.backends.base import InvalidCacheBackendError
 
 import git
 from git.objects.tree import Tree
@@ -41,6 +43,11 @@ Blob.latest_commit = latest_commit_patch
 ### Monkey patching of git.objects.blob.Truee
 ###
 Tree.latest_commit = latest_commit_patch
+
+try:
+	repo_commit_cache = get_cache('repository-commits')
+except InvalidCacheBackendError:
+	repo_commit_cache = get_cache('default')
 
 class GitRepository(object):
 
@@ -103,6 +110,10 @@ class GitRepository(object):
 			self._commit_list = CommitListWrapper(self.repo, self.list_filter_ref, self.list_filter_path)
 		return self._commit_list
 
+	@property
+	def tags(self):
+		return sorted(self._repo_obj.tags, key=lambda x: x.name, reverse=True)
+
 	def get_config_value(self, section, option, default=None):
 		return self.repo_config.get_value(section, option, default)
 
@@ -157,8 +168,15 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		return len(list(self.repo.iter_commits(self.filter_ref, paths=self.filter_path)))
+		commit_count = repo_commit_cache.get(self.repo.head.commit.hexsha)
 
+		if not commit_count:
+			commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
+			repo_commit_cache.set(self.repo.head.commit.hexsha, commit_count)
+
+		return commit_count
+
+#
 	def __getitem__(self, item):
 		logging.info("Wrapper: __getitem__(item=%s)" % item)
 

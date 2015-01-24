@@ -19,7 +19,7 @@
 	<ul class="nav nav-tabs">
 		<li role="presentation" class="active"><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}" title="Browse source tree of {{repository.name}}">Source</a></li>
 		<li role="presentation"><a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}" title="Commits for {{repository.name}}">Commits</a></li>
-		<li role="presentation"><a href="#" title="Tags in {{repository.name}}">Tags</a></li>
+		<li role="presentation"><a href="{% url 'tags' repository.relative_path %}" title="Tags in {{repository.name}}">Tags</a></li>
 		<li role="presentation"><a href="#" title="Stats for {{repository.name}}">Stats</a></li>
 	</ul>
 

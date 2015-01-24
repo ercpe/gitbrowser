@@ -1,0 +1,13 @@
+{% extends "repository_template.html" %}
+{% load humanize %}
+{% load bootstrap3 %}
+
+{% block title %}Tags in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+
+{% block repository_content %}
+
+	{% for tag in repository.tags %}
+		<p>{{tag}}</p>
+	{% endfor %}
+
+{% endblock %}

@@ -91,4 +91,10 @@ class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 		d['paginator'] = paginator
 		d['commits'] = commits
 		return d
-		#return render_to_response('list.html', {"contacts": contacts})
+
+
+class RepositoryTagsView(TreeOperationMixin, TemplateView):
+	template_name = 'repo_tags.html'
+
+	def get_context_data(self, **kwargs):
+		return super(RepositoryTagsView, self).get_context_data(repository=self.repository)
