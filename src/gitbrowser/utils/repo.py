@@ -63,7 +63,6 @@ class GitRepository(object):
 		self.list_filter_path = None
 
 		self._repo_obj = None
-		self._repo_can_list_commits = None
 
 		self._commit_list = None
 
@@ -97,14 +96,6 @@ class GitRepository(object):
 				l.append(chunk)
 				yield '/'.join(l), chunk
 		return list(inner())
-
-	@property
-	def can_list_commits(self):
-		if self._repo_can_list_commits is None:
-			self._repo_can_list_commits = len(list(self.repo.iter_commits(max_count=6000))) < 6000
-			if not self._repo_can_list_commits:
-				logging.warning("Disabling get_latest_commit() - repo is too large")
-		return self._repo_can_list_commits
 
 	@property
 	def commit_list(self):
@@ -151,11 +142,17 @@ class GitRepository(object):
 	def get_latest_commit(self, item):
 		# TODO: This should be improved - albeit it seems it's fast as we can get:
 		# https://github.com/gitpython-developers/GitPython/issues/240
-		if self.can_list_commits:
-			logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
-			return self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
-		else:
-			return None
+		cache_key = "latest_commit_%s" % item.hexsha
+
+		latest_commit_hexsha = repo_commit_cache.get(cache_key)
+		if latest_commit_hexsha:
+			return git.Commit.new(self.repo, latest_commit_hexsha)
+
+		logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
+		latest_commit = self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
+		repo_commit_cache.set(cache_key, latest_commit.hexsha)
+
+		return latest_commit
 
 
 class CommitListWrapper(object):
@@ -173,11 +170,12 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		commit_count = repo_commit_cache.get(self.repo.head.commit.hexsha)
+		cache_key = "count_%s" % self.repo.head.commit.hexsha
+		commit_count = repo_commit_cache.get(cache_key)
 
 		if not commit_count:
 			commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
-			repo_commit_cache.set(self.repo.head.commit.hexsha, commit_count)
+			repo_commit_cache.set(cache_key, commit_count)
 
 		return commit_count
 
