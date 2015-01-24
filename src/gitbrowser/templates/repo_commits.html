@@ -6,22 +6,37 @@
 
 {% block repository_content %}
 
-	<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList">
-		<meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
-		{% for commit in commits %}
-			<tr>
-				<td itemprop="itemListElement">
-					<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
-					   itemprop="url"
-					   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
-				</td>
-				<td class="text-muted tree-item-latest-commit-date">
-					<time datetime="{{commit.committed_datetime|date:'c'}}"
-						  title="{{commit.committed_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
-				</td>
-			</tr>
-		{% endfor %}
-	</table>
+{% regroup commits by committed_datetime.date as grouped_commits %}
+
+	{% for commit_group in grouped_commits %}
+		<h5 class="text-muted">Commits on {{commit_group.grouper}}</h5>
+		<ul class="media-list commit-list" itemscope itemtype="http://schema.org/ItemList">
+			<meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
+			{% for commit in commit_group.list %}
+				<li class="media">
+					<div class="media-left">
+						<img class="media-object img-rounded"
+							 src="{% url 'avatar' repository.relative_path %}?email={{commit.committer.email}}&size=40"
+							 alt="{{commit.committer}}" title="{{commit.committer}}">
+					</div>
+					<div class="media-body">
+						<h4 class="media-heading">
+							<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
+							   itemprop="url"
+							   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
+						</h4>
+						<p itemprop="description" class="text-muted">
+							{{commit.committer}},
+							<time datetime="{{commit.committed_datetime|date:'c'}}"
+								  title="{{commit.committed_datetime}}">{{commit.authored_datetime|naturaltime}}</time>
+						</p>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+
+		<hr />
+	{% endfor %}
 
 	{% bootstrap_pagination commits %}
 
