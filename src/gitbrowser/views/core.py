@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from gzip import GzipFile
 import logging
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
-from django.http.response import Http404
-from django.views.generic.base import TemplateView
+from django.http.response import Http404, StreamingHttpResponse, HttpResponse
+from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from gitbrowser.conf import config
 
@@ -98,3 +99,20 @@ class RepositoryTagsView(TreeOperationMixin, TemplateView):
 
 	def get_context_data(self, **kwargs):
 		return super(RepositoryTagsView, self).get_context_data(repository=self.repository)
+
+
+class RepositoryArchiveView(TreeOperationMixin, View):
+
+	def get(self, *args, **kwargs):
+		tag = kwargs.get('tag')
+		format = kwargs.get('format')
+
+		filename = '%s-%s.tar.%s' % (self.repository.clean_name, tag, format)
+
+		resp = HttpResponse(content_type='application/x-gtar')
+		resp['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+		with GzipFile(filename=filename, fileobj=resp, mode='wb', compresslevel=5) as gz:
+			self.repository.archive(gz, treeish=tag)
+
+		return resp

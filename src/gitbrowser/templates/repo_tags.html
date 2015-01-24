@@ -13,7 +13,9 @@
 		{% for tag in repository.tags %}
 			<div itemprop="itemListElement">
 				<h3><span itemprop="name">{{tag}}</span> <small itemprop="description">{{tag.commit.summary}}</small></h3>
-				<p class="text-muted">{{tag.commit.committer}}, {{tag.commit.committed_datetime|time_tag}}</p>
+				<p class="text-muted">{{tag.commit.committer}}, {{tag.commit.committed_datetime|time_tag}} -
+					Download <a href="{% url 'archive' repository.relative_path tag.name 'gz' %}">.tar.gz</a>
+				</p>
 			</div>
 		{% empty %}
 			<p>This repository does not have any tags yet.</p>

@@ -15,6 +15,7 @@ from git.objects.blob import Blob
 ###
 from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
+import re
 from repoze.lru import lru_cache
 
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
@@ -54,6 +55,7 @@ class GitRepository(object):
 	def __init__(self, fs_path, relative_path):
 		self.repo_path = fs_path
 		self.name = os.path.basename(fs_path)
+		self.clean_name = self.name[:-4] if self.name.endswith('.git') else self.name
 		self.path = os.path.dirname(relative_path)
 		self.relative_path = relative_path
 
@@ -112,7 +114,10 @@ class GitRepository(object):
 
 	@property
 	def tags(self):
-		return sorted(self._repo_obj.tags, key=lambda x: x.name, reverse=True)
+		return sorted(self.repo.tags, key=lambda x: x.name, reverse=True)
+
+	def archive(self, stream, *args, **kwargs):
+		return self.repo.archive(stream, *args, **kwargs)
 
 	def get_config_value(self, section, option, default=None):
 		return self.repo_config.get_value(section, option, default)
