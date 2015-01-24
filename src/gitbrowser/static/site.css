@@ -4,3 +4,7 @@ html { overflow-y: scroll; }
 td.tree-item-latest-commit-date { text-align: right; width: 160px; }
 
 .commit-list img.media-object { width: 40px; height: 40px; }
+.commit-message {
+	font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, monospace;
+	font-size: 0.9em;
+}

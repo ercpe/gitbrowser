@@ -15,7 +15,7 @@
 
 	<blockquote>{{commit.summary}}</blockquote>
 	{% if commit.message_without_summary %}
-		<p class="commit-message">{{commit.message_without_summary|linebreaks}}</p>
+		<div class="commit-message">{{commit.message_without_summary|linebreaks}}</div>
 	{% endif %}
 
 	<p>
