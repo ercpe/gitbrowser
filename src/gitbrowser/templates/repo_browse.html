@@ -2,6 +2,10 @@
 {% load gb_tags %}
 {% load humanize %}
 
+{% block scripts %}
+	<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
+{% endblock %}
+
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block repository_content %}
@@ -28,16 +32,10 @@
 							{% endif %}"
 						   title="Show {{item.name}}" itemprop="name url">{{item.name}}</a>
 					</td>
-					<td class="text-muted tree-item-latest-commit">
+					<td class="text-muted tree-item-latest-commit" id="commit_{{item.hexsha}}"></td>
+					<td class="text-muted tree-item-latest-commit-date" id="datetime_{{item.hexsha}}">
 						{% if commit %}
-							<a class="text-muted"
-								href="{% url 'commit' repository.relative_path commit.hexsha %}"
-								title="{{commit.summary}}">{{commit.summary}}</a>
-						{% endif %}
-					</td>
-					<td class="text-muted tree-item-latest-commit-date">
-						{% if commit %}
-							{{item.latest_commit.authored_datetime|time_tag}}
+
 						{% endif %}
 					</td>
 				</tr>
@@ -46,5 +44,21 @@
 	{% else %}
 		<p>This is an empty repository</p>
 	{% endif %}
+
+	<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var ev = new EventSource('{% url 'tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}');
+			ev.onmessage = function(e) {
+				//console.log(e.data);
+				var data = JSON.parse(e.data);
+				$('#commit_' + data['obj']).html(data['summary_link']);
+				$('#datetime_' + data['obj']).html(data['commit_datetime']);
+			};
+			ev.onerror = function(e) {
+				ev.close();
+			};
+		});
+	</script>
 
 {% endblock %}

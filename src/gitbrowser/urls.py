@@ -1,13 +1,15 @@
 from django.conf.urls import patterns, include, url
 from gitbrowser.views.aux import styles, ContributerAvatarView
 from gitbrowser.views.core import ListRepositoriesView, BrowseTreeView, BrowseBlobView, \
-	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView
+	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
+	RepositoryTreeData
 
 urlpatterns = patterns('',
 
 	url(r'^_styles.css$', styles, name='styles'),
 
 	url(r'^(?P<path>.+)/blob/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseBlobView.as_view(), name='browse_blob'),
+	url(r'^(?P<path>.+)/_data/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', RepositoryTreeData.as_view(), name='tree_data'),
 	url(r'^(?P<path>.+)/tree/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseTreeView.as_view(), name='browse_ref'),
 	url(r'^(?P<path>.+)/commits/(?P<ref>[\w\d\-\.]+)$', RepositoryCommitsListView.as_view(), name='commits'),
 	url(r'^(?P<path>.+)/commit/(?P<commit_id>[\w\d]{40})$', CommitDetailView.as_view(), name='commit'),

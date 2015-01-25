@@ -132,7 +132,7 @@ class GitRepository(object):
 
 		if isinstance(subtree, Tree):
 			for item in sorted(subtree, key=lambda item: item.type, reverse=True):
-				yield item, self.get_latest_commit(item)
+				yield item, None #self.get_latest_commit(item)
 		else:
 			yield subtree, self.get_latest_commit(subtree)
 

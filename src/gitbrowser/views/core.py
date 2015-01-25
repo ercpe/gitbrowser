@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from gzip import GzipFile
-import logging
+import json
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
 from django.http.response import Http404, StreamingHttpResponse, HttpResponse
+from django.template.base import Template
+from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from gitbrowser.conf import config
+from gitbrowser.templatetags.gb_tags import time_tag
 
 
 class ListRepositoriesView(TemplateView):
@@ -45,6 +48,25 @@ class BrowseTreeView(TreeOperationMixin, DetailView):
 
 	def get_object(self, queryset=None):
 		return self.repository
+
+
+class RepositoryTreeData(TreeOperationMixin, View):
+
+	def get(self, request, *args, **kwargs):
+		def _inner():
+			for item, _ in self.repository.items():
+				commit = self.repository.get_latest_commit(item)
+				yield "data: %s\n\n" % json.dumps({
+					'summary_link': Template('''<a class="text-muted"
+								href="{% url 'commit' repository.relative_path commit.hexsha %}"
+								title="{{commit.summary}}">{{commit.summary}}</a>''').render(Context({
+						'repository': self.repository,
+						'commit': commit
+					})),
+					'commit_datetime': time_tag(commit.authored_datetime()),
+					'obj': item.hexsha
+				})
+		return StreamingHttpResponse(_inner(), content_type='text/event-stream')
 
 
 class BrowseBlobView(TreeOperationMixin, DetailView):
