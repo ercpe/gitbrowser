@@ -1,4 +1,4 @@
-{% extends "repository_template.html" %}
+{% extends "repository_browse_template.html" %}
 {% load gb_tags %}
 {% load humanize %}
 {% load highlight %}
@@ -9,7 +9,7 @@
 
 {% block title %}{{blob.path}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
-{% block repository_content %}
+{% block repository_browse_content %}
 	<p>
 		<a href="mailto:{{blob.latest_commit.author.email}}">{{blob.latest_commit.author}}</a> on
 		{{blob.latest_commit.authored_datetime|time_tag}}:

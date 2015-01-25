@@ -1,23 +1,11 @@
-{% extends "repository_template.html" %}
+{% extends "repository_browse_template.html" %}
 {% load gb_tags %}
 {% load humanize %}
 {% load bootstrap3 %}
 
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
-{% block repository_content %}
-
-	<ol class="breadcrumb">
-		<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}" title="Browse repository root">{{repository.name}}</a></li>
-		{% for path, label in repository.list_filter_path_items %}
-			{% if forloop.last %}
-				<li class="active">{{label}}</li>
-			{% else %}
-				<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
-						title="Browse {{path}}">{{label}}</a></li>
-			{% endif %}
-		{% endfor %}
-	</ol>
+{% block repository_browse_content %}
 
 	{% if repository.items %}
 		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList">
