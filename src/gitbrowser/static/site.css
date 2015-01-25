@@ -16,3 +16,5 @@ td.tree-item-latest-commit-date { text-align: right; width: 165px; }
 .branch-selector { color: inherit; }
 
 .highlight pre { tab-size: 4; }
+
+#footer { text-align: center; margin-bottom: 20px;}
