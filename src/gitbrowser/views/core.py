@@ -78,7 +78,7 @@ class BrowseBlobView(TreeOperationMixin, DetailView):
 		self._repo = None
 
 	def get_object(self, queryset=None):
-		return self.repository.items().next()[0]
+		return self.repository.items().next()
 
 	def get_context_data(self, **kwargs):
 		return super(BrowseBlobView, self).get_context_data(repository=self.repository)
