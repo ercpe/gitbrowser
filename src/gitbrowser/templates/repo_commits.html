@@ -18,7 +18,7 @@
 					<div class="media-left">
 						<img class="media-object img-rounded"
 							 src="{% url 'avatar' repository.relative_path %}?email={{commit.committer.email}}&size=40"
-							 alt="{{commit.committer}}" title="{{commit.committer}}">
+							 alt="{{commit.committer.name}}" title="{{commit.committer.name}}">
 					</div>
 					<div class="media-body">
 						<h4 class="media-heading">
@@ -27,7 +27,7 @@
 							   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
 						</h4>
 						<p itemprop="description" class="text-muted">
-							{{commit.committer}}, {{commit.committed_datetime|time_tag}}
+							{{commit.committer.name}}, {{commit.committed_datetime|time_tag}}
 						</p>
 					</div>
 				</li>
