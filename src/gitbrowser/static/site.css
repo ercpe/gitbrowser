@@ -8,3 +8,5 @@ td.tree-item-latest-commit-date { text-align: right; width: 160px; }
 	font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, monospace;
 	font-size: 0.9em;
 }
+
+.breadcrumb { margin-top: 10px; }

@@ -3,19 +3,6 @@
 {% block content %}
 	<h1>{{repository}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
 
-	<ol class="breadcrumb">
-		<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}" title="Browse repository root">{{repository.name}}</a></li>
-		{% for path, label in repository.list_filter_path_items %}
-			{% if forloop.last %}
-				<li class="active">{{label}}</li>
-			{% else %}
-				<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
-						title="Browse {{path}}">{{label}}</a></li>
-			{% endif %}
-		{% endfor %}
-	</ol>
-
-
 	<ul class="nav nav-tabs">
 		<li role="presentation" class="active"><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}" title="Browse source tree of {{repository.name}}">Source</a></li>
 		<li role="presentation"><a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}" title="Commits for {{repository.name}}">Commits</a></li>
