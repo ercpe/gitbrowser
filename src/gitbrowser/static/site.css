@@ -1,7 +1,7 @@
 html { overflow-y: scroll; }
 
 .tree-table .tree-item-name { white-space: nowrap; }
-td.tree-item-latest-commit-date { text-align: right; width: 160px; }
+td.tree-item-latest-commit-date { text-align: right; width: 165px; }
 
 .commit-list img.media-object { width: 40px; height: 40px; }
 .commit-message {
@@ -10,3 +10,7 @@ td.tree-item-latest-commit-date { text-align: right; width: 160px; }
 }
 
 .breadcrumb { margin-top: 10px; }
+
+.current-branch { font-weight: bold !important; }
+
+.branch-selector { color: inherit; }

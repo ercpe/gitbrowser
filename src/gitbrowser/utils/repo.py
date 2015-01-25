@@ -107,6 +107,14 @@ class GitRepository(object):
 	def tags(self):
 		return sorted(self.repo.tags, key=lambda x: x.name, reverse=True)
 
+	@property
+	def branches(self):
+		return self.repo.branches
+
+	@property
+	def current_branch(self):
+		return self.repo.active_branch
+
 	def archive(self, stream, *args, **kwargs):
 		return self.repo.archive(stream, *args, **kwargs)
 
@@ -132,9 +140,9 @@ class GitRepository(object):
 
 		if isinstance(subtree, Tree):
 			for item in sorted(subtree, key=lambda item: item.type, reverse=True):
-				yield item, None #self.get_latest_commit(item)
+				yield item
 		else:
-			yield subtree, self.get_latest_commit(subtree)
+			yield subtree
 
 	def get_commit(self, commit_id):
 		return self.repo.commit(commit_id)

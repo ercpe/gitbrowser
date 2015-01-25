@@ -54,7 +54,7 @@ class RepositoryTreeData(TreeOperationMixin, View):
 
 	def get(self, request, *args, **kwargs):
 		def _inner():
-			for item, _ in self.repository.items():
+			for item in self.repository.items():
 				commit = self.repository.get_latest_commit(item)
 				yield "data: %s\n\n" % json.dumps({
 					'summary_link': Template('''<a class="text-muted"

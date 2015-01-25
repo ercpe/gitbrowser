@@ -3,10 +3,6 @@
 {% load humanize %}
 {% load bootstrap3 %}
 
-{% block scripts %}
-	<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
-{% endblock %}
-
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block repository_content %}
@@ -35,7 +31,7 @@
 				</tr>
 			{% endif %}
 
-			{% for item, commit in repository.items %}
+			{% for item in repository.items %}
 				<tr itemprop="itemListElement">
 					<td class="tree-item-name">
 						{% if item.type == 'blob' %}
@@ -54,11 +50,7 @@
 							{{item.name}}</a>
 					</td>
 					<td class="text-muted tree-item-latest-commit" id="commit_{{item.hexsha}}"></td>
-					<td class="text-muted tree-item-latest-commit-date" id="datetime_{{item.hexsha}}">
-						{% if commit %}
-
-						{% endif %}
-					</td>
+					<td class="text-muted tree-item-latest-commit-date" id="datetime_{{item.hexsha}}"></td>
 				</tr>
 			{% endfor %}
 		</table>

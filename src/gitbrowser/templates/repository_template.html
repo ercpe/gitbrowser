@@ -1,5 +1,10 @@
 {% extends "template.html" %}
 
+{% block scripts %}
+	<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js"></script>
+{% endblock %}
+
 {% block content %}
 	<h1>{{repository}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
 
@@ -8,6 +13,32 @@
 		<li role="presentation"><a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}" title="Commits for {{repository.name}}">Commits</a></li>
 		<li role="presentation"><a href="{% url 'tags' repository.relative_path %}" title="Tags in {{repository.name}}">Tags</a></li>
 		<li role="presentation"><a href="#" title="Stats for {{repository.name}}">Stats</a></li>
+
+		<li role="presentation" class="dropdown pull-right branch-selector">
+			<a class="dropdown-toggle text-muted" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+      			Branch: <strong>{{repository.list_filter_ref}}</strong> <span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu dropdown-menu-right" role="menu">
+				{% if repository.branches|length > 1 %}
+					<li>
+						<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
+						   class="current-branch"
+						   title="Browse branch {{repository.list_filter_ref}}">{{repository.list_filter_ref}}</a>
+					</li>
+					<li role="presentation" class="divider"></li>
+					{% for branch in repository.branches %}
+						{% if branch.name != repository.list_filter_ref %}
+							<li>
+								<a href="{% url 'browse_ref' repository.relative_path branch repository.list_filter_path %}"
+										title="Browse branch {{branch}}">{{branch}}</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+				{% else %}
+					<li role="presentation"><i>No other branches.</i></li>
+				{% endif %}
+    		</ul>
+  		</li>
 	</ul>
 
 	{% block repository_content %}
