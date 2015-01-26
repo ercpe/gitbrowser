@@ -10,6 +10,7 @@ from git.objects.tree import Tree
 from git.objects.blob import Blob
 from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
+from natsort import versorted
 from gitbrowser.conf import config
 
 try:
@@ -116,7 +117,7 @@ class GitRepository(object):
 
 	@property
 	def tags(self):
-		return sorted(self.repo.tags, key=lambda x: x.name, reverse=True)
+		return versorted(self.repo.tags, key=lambda x: x.name, reverse=True)
 
 	@property
 	def branches(self):
