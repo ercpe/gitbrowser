@@ -10,8 +10,12 @@ from git.objects.tree import Tree
 from git.objects.blob import Blob
 from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
-from repoze.lru import lru_cache
 from gitbrowser.conf import config
+
+try:
+	repo_commit_cache = get_cache('repository-commits')
+except InvalidCacheBackendError:
+	repo_commit_cache = get_cache('default')
 
 ###
 ### Monkey patching of git.objects.commit.Commit
@@ -24,7 +28,21 @@ Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.aut
 Commit.committed_datetime = lambda self: datetime.datetime.fromtimestamp(self.committed_date)
 
 
-latest_commit_patch = lru_cache(500)(lambda self: self.repo.iter_commits(paths=self.path, max_count=1).next())
+def latest_commit_patch(self):
+	cache_key = 'latest_commit'
+	latest_commit = repo_commit_cache.get(cache_key)
+	self.repo.iter_commits(paths=self.path, max_count=1).next()
+	cache_key = "latest_commit_%s" % self.hexsha
+
+	latest_commit_hexsha = repo_commit_cache.get(cache_key)
+	if latest_commit_hexsha:
+		return git.Commit.new(self.repo, latest_commit_hexsha)
+
+	latest_commit = self.repo.iter_commits(paths=self.path, max_count=1).next()
+	repo_commit_cache.set(cache_key, latest_commit.hexsha)
+
+	return latest_commit
+
 
 ###
 ### Monkey patching of git.objects.blob.Blob
@@ -42,11 +60,6 @@ Blob.latest_commit = latest_commit_patch
 ### Monkey patching of git.objects.blob.Truee
 ###
 Tree.latest_commit = latest_commit_patch
-
-try:
-	repo_commit_cache = get_cache('repository-commits')
-except InvalidCacheBackendError:
-	repo_commit_cache = get_cache('default')
 
 class GitRepository(object):
 
