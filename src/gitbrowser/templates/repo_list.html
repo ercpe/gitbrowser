@@ -8,6 +8,9 @@
 			<tr>
 				<td><a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo}}</a></td>
 				<td class="text-muted">{{repo.description}}</td>
+				<td>{% for url in repo.clone_urls %}
+					<a href="{{url}}">{{url}}</a><br />
+				{% endfor %}</td>
 			</tr>
 
 		{% empty %}

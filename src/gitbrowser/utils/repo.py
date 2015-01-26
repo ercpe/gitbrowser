@@ -8,16 +8,14 @@ from django.core.cache.backends.base import InvalidCacheBackendError
 import git
 from git.objects.tree import Tree
 from git.objects.blob import Blob
-
+from git.objects.commit import Commit
+from gitdb.exc import BadObject, BadName
+from repoze.lru import lru_cache
+from gitbrowser.conf import config
 
 ###
 ### Monkey patching of git.objects.commit.Commit
 ###
-from git.objects.commit import Commit
-from gitdb.exc import BadObject, BadName
-import re
-from repoze.lru import lru_cache
-
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
 Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
 								if self.parents else \
@@ -114,6 +112,13 @@ class GitRepository(object):
 	@property
 	def current_branch(self):
 		return self.repo.active_branch
+
+	@property
+	def clone_urls(self):
+		for tpl in config.clone_url_templates:
+			yield tpl % {
+				'path': self.relative_path
+			}
 
 	def archive(self, stream, *args, **kwargs):
 		return self.repo.archive(stream, *args, **kwargs)
