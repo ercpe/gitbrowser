@@ -5,6 +5,7 @@ from django.conf import settings
 
 FEATURE_DEFAULTS = {
 	'gravatar': True,
+	'render_readme': True,
 }
 
 
@@ -31,8 +32,9 @@ class GitbrowserConf(object):
 		return self._gbconf.get('clone_url_templates', [])
 
 	def feature_enabled(self, feature_name):
-		features = self._gbconf.get('features', {})
-		return features.get(feature_name, FEATURE_DEFAULTS[feature_name]) == True
+		features = FEATURE_DEFAULTS
+		features.update(self._gbconf.get('features', {}))
+		return features.get(feature_name, False) is True
 
 
 config = GitbrowserConf()

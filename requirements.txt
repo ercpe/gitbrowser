@@ -3,3 +3,4 @@ git-python
 natsort
 bootstrap3
 pygments
+markdown

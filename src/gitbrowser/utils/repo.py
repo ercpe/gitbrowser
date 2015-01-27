@@ -2,6 +2,7 @@
 import logging
 import os
 import datetime
+import traceback
 from django.core.cache import get_cache
 from django.core.cache.backends.base import InvalidCacheBackendError
 
@@ -12,6 +13,7 @@ from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
 from natsort import versorted
 from gitbrowser.conf import config
+from gitbrowser.utils.rendering import get_renderer_by_name
 
 try:
 	repo_commit_cache = get_cache('repository-commits')
@@ -100,6 +102,9 @@ class GitRepository(object):
 
 	@property
 	def list_filter_path_items(self):
+		"""
+		:return: a list of tuples (relative path, label) for all items in list_filter_path
+		"""
 		def inner():
 			l = []
 			for chunk in self.list_filter_path.split('/'):
@@ -134,6 +139,32 @@ class GitRepository(object):
 				'path': self.relative_path
 			}
 
+	@property
+	def list_filter_root(self):
+		""":return bool True if the current list filter points to the root of the repository"""
+		return self.list_filter_path.rstrip('/') == ""
+
+	@property
+	def readme(self):
+		if not (self.list_filter_root and config.feature_enabled('render_readme')):
+			return
+
+		for filename, renderer_name in [('README.md', 'markdown'),]: # todo: support rst?
+			try:
+				items = list(self.items(filename))
+			except KeyError as ke:
+				continue
+
+			if len(items or []) == 1 and isinstance(items[0], Blob):
+				logging.info("Found readme %s" % filename)
+				try:
+					renderer = get_renderer_by_name(renderer_name)
+					return renderer.render(items[0].content())
+				except Exception as ex:
+					logging.error("Could not render readme %s - %s" % (filename, ex))
+					logging.error(traceback.format_exc())
+
+
 	def archive(self, stream, *args, **kwargs):
 		return self.repo.archive(stream, *args, **kwargs)
 
@@ -145,15 +176,16 @@ class GitRepository(object):
 		self.list_filter_ref = ref
 		self.list_filter_path = path.strip('/')
 
-	def items(self):
+	def items(self, filter_path=None):
 		try:
 			tree = self.repo.tree(self.list_filter_ref)
 		except (BadObject, BadName) as bo:
 			logging.warning("Got %s - is the repository empty?" % bo)
 			return
 
-		if self.list_filter_path:
-			subtree = tree[self.list_filter_path]
+		path = filter_path or self.list_filter_path
+		if path:
+			subtree = tree[path]
 		else:
 			subtree = tree
 
