@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.html import linebreaks
 import markdown
 from markdown.extensions.headerid import HeaderIdExtension
 
@@ -12,7 +13,7 @@ class Renderer(object):
 class PlainTextRenderer(Renderer):
 
 	def render(self, markup):
-		return markup
+		return linebreaks(markup)
 
 
 class MarkdownRenderer(Renderer):

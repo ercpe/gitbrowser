@@ -149,7 +149,7 @@ class GitRepository(object):
 		if not (self.list_filter_root and config.feature_enabled('render_readme')):
 			return
 
-		for filename, renderer_name in [('README.md', 'markdown'),]: # todo: support rst?
+		for filename, renderer_name in [('README.md', 'markdown',), ('README', 'text'), ('README.txt', 'text')]: # todo: support rst?
 			try:
 				items = list(self.items(filename))
 			except KeyError as ke:
