@@ -48,7 +48,7 @@
 
 	{% if repository.readme %}
 		<div class="panel panel-default">
-			<div class="panel-heading">Readme</div>
+			<div class="panel-heading"><h4 class="panel-title" id="readme">{% bootstrap_icon "list-alt" %} Readme</h4></div>
 			<div class="panel-body">
 				{{repository.readme|safe}}
   			</div>
