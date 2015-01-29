@@ -2,10 +2,10 @@
 from django.conf import settings
 
 
-
 FEATURE_DEFAULTS = {
 	'gravatar': True,
 	'render_readme': True,
+	'intercept_gitweb_links': True
 }
 
 
