@@ -29,7 +29,7 @@ Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
 								self.diff(None, create_patch=True)
 Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
 Commit.committed_datetime = lambda self: datetime.datetime.fromtimestamp(self.committed_date)
-
+Commit.stats_iter = lambda self: ((k, self.stats.files[k]['insertions'], self.stats.files[k]['deletions']) for k in sorted(self.stats.files.keys()))
 
 def latest_commit_patch(self):
 	cache_key = 'latest_commit'

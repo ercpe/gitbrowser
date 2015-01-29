@@ -22,8 +22,16 @@
 		<a href="mailto:{{commit.author.email}}">{{commit.author}}</a> on {{commit.authored_datetime|time_tag}}
 	</p>
 
+	<div class="commit-stats">
+		{% for filename, insertions, deletions in commit.stats_iter %}
+			<div><a href="#{{filename|slugify}}">{{filename}}</a> ({% if insertions %}<span class="insertions">+{{insertions}}</span>{% endif %} {% if deletions %}<span class="deletions">-{{deletions}}</span>{% endif %})</div>
+		{% endfor %}
+	</div>
+
 	{% for change in commit.changes %}
-		{% highlight change.diff "text/x-patch" %}
+		<div id="{{change.a_blob.path|slugify}}">
+			{% highlight change.diff "text/x-patch" %}
+		</div>
 	{% endfor %}
 
 {% endblock %}
