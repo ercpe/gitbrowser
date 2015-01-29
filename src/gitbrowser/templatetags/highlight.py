@@ -10,7 +10,7 @@ from pygments.util import ClassNotFound
 register = template.Library()
 
 @register.simple_tag(name='highlight')
-def pygments_highlight2(code, mime_type, filename=None):
+def pygments_highlight2(code, mime_type, filename=None, **kwargs):
 	if not code:
 		return ""
 
@@ -25,4 +25,4 @@ def pygments_highlight2(code, mime_type, filename=None):
 	if not lexer:
 		lexer = get_lexer_for_mimetype(mime_type)
 
-	return highlight(code, lexer, HtmlFormatter())
+	return highlight(code, lexer, HtmlFormatter(**kwargs))

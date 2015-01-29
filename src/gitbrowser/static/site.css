@@ -21,3 +21,5 @@ td.tree-item-latest-commit-date { text-align: right; width: 165px; }
 
 .commit-stats .insertions { color: green; }
 .commit-stats .deletions { color: red; }
+
+.highlighttable .code { width: 100%; }
