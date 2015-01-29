@@ -33,7 +33,7 @@ class InterceptGitwebMiddleware(object):
 			redirect_url = reverse('browse_blob', args=(project, head_base, file_or_folder))
 		elif action == 'shortlog':
 			redirect_url = reverse('commits', args=(project, head_base))
-		elif action == 'commitdiff':
+		elif action in ('commit', 'commitdiff', ):
 			redirect_url = reverse('commit', args=(project, commit))
 		elif action == 'blob_plain':
 			#TODO: Implement raw view
