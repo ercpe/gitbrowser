@@ -35,6 +35,9 @@ class InterceptGitwebMiddleware(object):
 			redirect_url = reverse('commits', args=(project, head_base))
 		elif action == 'commitdiff':
 			redirect_url = reverse('commit', args=(project, commit))
+		elif action == 'blob_plain':
+			#TODO: Implement raw view
+			pass
 
 		if redirect_url:
 			logging.info("Intercepted gitweb url. Redirecting to %s" % redirect_url)
