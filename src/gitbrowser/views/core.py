@@ -99,6 +99,7 @@ class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_commits.html'
 
 	def get_context_data(self, **kwargs):
+		# TODO: Show error page if the reference does not exist
 		d = super(RepositoryCommitsListView, self).get_context_data(repository=self.repository)
 
 		paginator = Paginator(self.repository.commit_list, 25) # Show 25 contacts per page
