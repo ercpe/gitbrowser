@@ -8,7 +8,7 @@
 {% block repository_content %}
 
 	<div itemscope itemtype="http://schema.org/ItemList">
-		<meta name="numberOfItems" content="{{repository.tags|length}}" />
+		<meta itemprop="numberOfItems" content="{{repository.tags|length}}" />
 
 		{% for tag in repository.tags %}
 			<div itemprop="itemListElement">

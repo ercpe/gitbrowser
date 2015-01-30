@@ -11,9 +11,6 @@ class InterceptGitwebMiddleware(object):
 		if not config.feature_enabled('intercept_gitweb_links'):
 			return
 
-		for k, v in request.GET.items():
-			print("  %s => %s" % (k, v))
-
 		action = request.GET.get('a', None)
 		project = request.GET.get('p', None)
 		file_or_folder = request.GET.get('f', '')

@@ -14,7 +14,7 @@
 		<ul class="media-list commit-list" itemscope itemtype="http://schema.org/ItemList">
 			<meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
 			{% for commit in commit_group.list %}
-				<li class="media">
+				<li class="media" itemscope itemtype="http://schema.org/CreativeWork">
 					<div class="media-left">
 						<img class="media-object img-rounded"
 							 src="{% url 'avatar' repository.relative_path %}?email={{commit.committer.email}}&size=40"
@@ -24,10 +24,10 @@
 						<h4 class="media-heading">
 							<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
 							   itemprop="url"
-							   title="{{commit.summary}}">{{commit.summary|default:"(no message)"}}</a>
+							   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
 						</h4>
-						<p itemprop="description" class="text-muted">
-							{{commit.committer.name}}, {{commit.committed_datetime|time_tag}}
+						<p class="text-muted">
+							{% author_tag commit.author with_avatar=False %}, <span itemprop="dateCreated">{{commit.committed_datetime|time_tag}}</span>
 						</p>
 					</div>
 				</li>
