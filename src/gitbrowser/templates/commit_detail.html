@@ -36,11 +36,14 @@
 		</div>
 	</div>
 
-	<div class="commit-stats">
+	<dl class="commit-stats">
+		<dt>Changed files</dt>
 		{% for filename, insertions, deletions in commit.stats_iter %}
-			<div><a href="#{{filename|slugify}}">{{filename}}</a> ({% if insertions %}<span class="insertions">+{{insertions}}</span>{% endif %} {% if deletions %}<span class="deletions">-{{deletions}}</span>{% endif %})</div>
+			<dd>
+				<a href="#{{filename|slugify}}" title="{{filename}}">{{filename}}</a> ({% if insertions %}<span class="insertions">+{{insertions}}</span>{% endif %} {% if deletions %}<span class="deletions">-{{deletions}}</span>{% endif %})
+			</dd>
 		{% endfor %}
-	</div>
+	</dl>
 
 	{% for change in commit.changes %}
 		<div id="{{change.a_blob.path|slugify}}">
