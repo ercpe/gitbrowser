@@ -33,13 +33,11 @@ Commit.stats_iter = lambda self: ((k, self.stats.files[k]['insertions'], self.st
 Commit.shorthexsha = lambda self: self.hexsha[:7]
 
 def latest_commit_patch(self):
-	cache_key = 'latest_commit'
-	latest_commit = repo_commit_cache.get(cache_key)
-	self.repo.iter_commits(paths=self.path, max_count=1).next()
 	cache_key = "latest_commit_%s" % self.hexsha
 
 	latest_commit_hexsha = repo_commit_cache.get(cache_key)
 	if latest_commit_hexsha:
+		logging.debug("Cache HIT for %s" % cache_key)
 		return git.Commit.new(self.repo, latest_commit_hexsha)
 
 	latest_commit = self.repo.iter_commits(paths=self.path, max_count=1).next()
