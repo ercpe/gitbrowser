@@ -23,6 +23,12 @@ def pygments_highlight2(code, mime_type, filename=None, **kwargs):
 			logging.info("No lexer: %s" % cnf)
 
 	if not lexer:
-		lexer = get_lexer_for_mimetype(mime_type)
+		try:
+			lexer = get_lexer_for_mimetype(mime_type)
+		except ClassNotFound as cnf:
+			if filename:
+				lexer = get_lexer_for_filename(filename)
+			else:
+				lexer = get_lexer_for_mimetype('text/plain')
 
 	return highlight(code, lexer, HtmlFormatter(**kwargs))

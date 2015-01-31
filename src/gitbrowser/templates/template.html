@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load bootstrap3 %}<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -15,7 +15,26 @@
 		{% block styles %}{% endblock %}
 		{% block scripts %}{% endblock %}
 	</head>
-	<body>
+	<body role="document">
+
+		<nav class="navbar navbar-default navbar-fixed-top">
+  			<div class="container">
+				<div id="navbar">
+
+					<ul class="nav navbar-nav">
+						<li><a href="{% url 'list' '' %}" title="Projects">Projects</a></li>
+						<li class="navbar-text hidden-xs">/<li>
+						{% for path, label in browse_path_items %}
+							<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
+							{% if not forloop.last %}
+								<li class="navbar-text hidden-xs">/<li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</nav>
+
 		<div class="container">
 			<div class="wrapper">
 				{% block content %}{% endblock %}

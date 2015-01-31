@@ -11,6 +11,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from gitbrowser.conf import config
 from gitbrowser.templatetags.gb_tags import time_tag
+from gitbrowser.utils.misc import generate_breadcrumb_path
 
 
 class ListRepositoriesView(TemplateView):
@@ -18,7 +19,9 @@ class ListRepositoriesView(TemplateView):
 
 	def get_context_data(self, path='', **kwargs):
 		d = super(ListRepositoriesView, self).get_context_data()
+		logging.info("Listing path: %s" % path)
 		d['repositories'] = lambda: config.lister.list(self.request.user, path, flat=config.list_flat)
+		d['browse_path_items'] = generate_breadcrumb_path(path)
 		return d
 
 

@@ -33,7 +33,6 @@ class GitbrowserConf(object):
 		if not self.config_dict:
 			self.config_dict = CONFIG_DEFAULTS
 			self.config_dict.update(getattr(settings, 'GITBROWSER', {}))
-			print(self.config_dict)
 		return self.config_dict
 
 	@property

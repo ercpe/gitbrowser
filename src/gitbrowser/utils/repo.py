@@ -13,6 +13,7 @@ from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
 from natsort import versorted
 from gitbrowser.conf import config
+from gitbrowser.utils.misc import generate_breadcrumb_path
 from gitbrowser.utils.rendering import get_renderer_by_name
 
 try:
@@ -104,14 +105,7 @@ class GitRepository(object):
 		"""
 		:return: a list of tuples (relative path, label) for all items in list_filter_path
 		"""
-		def inner():
-			l = []
-			for chunk in self.list_filter_path.split('/'):
-				if not chunk:
-					continue
-				l.append(chunk)
-				yield '/'.join(l), chunk
-		return list(inner())
+		return list(generate_breadcrumb_path(self.list_filter_path))
 
 	@property
 	def commit_list(self):

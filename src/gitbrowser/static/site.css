@@ -1,4 +1,5 @@
 html { overflow-y: scroll; }
+body { padding-top: 70px; }
 
 .tree-table .tree-item-name { white-space: nowrap; min-width: 130px; }
 td.tree-item-latest-commit-date { text-align: right; width: 165px; }
