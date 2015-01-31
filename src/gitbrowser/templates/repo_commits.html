@@ -17,7 +17,7 @@
 				<li class="media" itemscope itemtype="http://schema.org/CreativeWork">
 					<div class="media-left">
 						<img class="media-object img-rounded"
-							 src="{% url 'avatar' repository.relative_path %}?email={{commit.committer.email}}&size=40"
+							 src="{% url 'avatar' %}?email={{commit.committer.email}}&size=40"
 							 alt="{{commit.committer.name}}" title="{{commit.committer.name}}">
 					</div>
 					<div class="media-body">
