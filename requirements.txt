@@ -4,3 +4,7 @@ natsort
 bootstrap3
 pygments
 markdown
+
+# test coverage
+coverage
+

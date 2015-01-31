@@ -3,3 +3,5 @@
 __pycache__
 
 src/gitbrowser/settings/dev.py
+
+.coverage
