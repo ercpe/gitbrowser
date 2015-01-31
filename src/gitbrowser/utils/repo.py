@@ -135,10 +135,12 @@ class GitRepository(object):
 
 	@property
 	def clone_urls(self):
+		l = []
 		for tpl in config.clone_url_templates:
-			yield tpl % {
+			l.append(tpl % {
 				'path': self.relative_path
-			}
+			})
+		return l
 
 	@property
 	def list_filter_root(self):

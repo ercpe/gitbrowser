@@ -13,10 +13,11 @@ urlpatterns = patterns('',
 	url(r'^(?P<path>.+\.git)/tree/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseTreeView.as_view(), name='browse_ref'),
 	url(r'^(?P<path>.+\.git)/commits/(?P<ref>[\w\d\-\.]+)$', RepositoryCommitsListView.as_view(), name='commits'),
 	url(r'^(?P<path>.+\.git)/commit/(?P<commit_id>[\w\d]{40})$', CommitDetailView.as_view(), name='commit'),
-	url(r'^(?P<path>.+\.git)/avatar/$', ContributerAvatarView.as_view(), name='avatar'),
 	url(r'^(?P<path>.+\.git)/tags/(?P<tag>[\w\d\-\.]+)\.tar\.(?P<format>gz)$', RepositoryArchiveView.as_view(), name='archive'),
 	url(r'^(?P<path>.+\.git)/tags/$', RepositoryTagsView.as_view(), name='tags'),
 	url(r'^(?P<path>.+\.git)/?$', BrowseTreeView.as_view(), name='browse'),
+
+	url(r'^_avatar/$', ContributerAvatarView.as_view(), name='avatar'),
 
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
 	url(r'^$', ListRepositoriesView.as_view(), name='list'),
