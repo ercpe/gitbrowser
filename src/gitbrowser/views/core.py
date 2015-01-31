@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from gzip import GzipFile
 import json
+import logging
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
 from django.http.response import Http404, StreamingHttpResponse, HttpResponse
@@ -15,9 +16,9 @@ from gitbrowser.templatetags.gb_tags import time_tag
 class ListRepositoriesView(TemplateView):
 	template_name = 'repo_list.html'
 
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, path='', **kwargs):
 		d = super(ListRepositoriesView, self).get_context_data()
-		d['repositories'] = lambda: config.lister.get_repositories(self.request.user)
+		d['repositories'] = lambda: config.lister.list(self.request.user, path, flat=config.list_flat)
 		return d
 
 

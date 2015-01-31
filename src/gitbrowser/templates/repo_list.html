@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load bootstrap3 %}
 
 {% block content %}
 
@@ -6,7 +7,15 @@
 		{% for repo in repositories %}
 
 			<tr>
-				<td><a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo}}</a></td>
+				<td>
+					{% if repo.repo %}
+						{% bootstrap_icon "list-alt" %}
+						<a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo}}</a>
+					{% else %}
+						{% bootstrap_icon "tasks" %}
+						<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo}}</a>
+					{% endif %}
+				</td>
 				<td class="text-muted">{{repo.description}}</td>
 				<td>{% for url in repo.clone_urls %}
 					<a href="{{url}}">{{url}}</a><br />
