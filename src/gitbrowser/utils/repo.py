@@ -54,6 +54,7 @@ ACCEPT_MIMETYPES_LAMBDAS = (
 	lambda mt: mt.startswith('text/'),
 	lambda mt: mt.startswith('application/xml'),
 	lambda mt: mt.startswith('application/x-javascript'),
+	lambda mt: mt.startswith('application/x-sql'),
 )
 Blob.can_display = lambda self: any((lmbda(self.mime_type) for lmbda in ACCEPT_MIMETYPES_LAMBDAS))
 Blob.content = lambda self: self.data_stream.read()
