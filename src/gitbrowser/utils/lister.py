@@ -3,7 +3,7 @@ import logging
 import os
 import re
 import itertools
-from gitbrowser.utils.acl import ACL
+from gitbrowser.acl.base import ACL
 from gitbrowser.utils.repo import GitRepository
 
 repository_dir_re = re.compile('\.git$')
@@ -40,7 +40,7 @@ class GitoliteProjectsFileRepositoryLister(RepositoryLister):
 		logging.info("Listing repositories for %s in '%s' (flat: %s)" % (user, path, flat))
 		readable_repositories = []
 
-		if path:
+		if path and not path.endswith('.git'):
 			path = path.rstrip('/') + '/'
 
 		with open(self.projects_file_path, 'r') as f:
@@ -87,13 +87,12 @@ class GitoliteProjectsFileRepositoryLister(RepositoryLister):
 				return 1
 			return -1
 
-
 		for x in sorted(repo_or_dir_iter(), cmp=repo_dir_cmp):
 			yield x
 
 	def get_repository(self, user, path):
 		logging.info("get_repository for user %s and path '%s'" % (user, path))
-		for repo in self.list(user, flat=True):
+		for repo in self.list(user, path=path, flat=True):
 			logging.info("Checking: %s" % repo.relative_path)
 			if repo.relative_path == path:
 				return repo
