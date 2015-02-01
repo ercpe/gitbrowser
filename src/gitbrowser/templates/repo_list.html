@@ -10,10 +10,10 @@
 				<td>
 					{% if repo.repo %}
 						{% bootstrap_icon "list-alt" %}
-						<a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo}}</a>
+						<a href="{% url 'browse' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
 					{% else %}
 						{% bootstrap_icon "tasks" %}
-						<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo}}</a>
+						<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
 					{% endif %}
 				</td>
 				<td class="text-muted">{{repo.description}}</td>
