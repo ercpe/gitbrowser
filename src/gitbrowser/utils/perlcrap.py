@@ -28,9 +28,10 @@ class DataDumperReader(object):
 		return py_data
 
 	def parse_block(self, block_data):
-		lexer = shlex.shlex(block_data)
+		lexer = shlex.shlex(block_data, posix=True)
 		lexer.quotes = "'"
 		lexer.wordchars += '"'
+		lexer.escapedquotes = "'"
 		return self.parse_structure(lexer)
 
 	def unquote(self, s):

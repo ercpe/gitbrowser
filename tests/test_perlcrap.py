@@ -35,6 +35,14 @@ class PerlCrapTestCase(SimpleTestCase):
 		self.assertEqual(d.keys()[0], 'foobar')
 		self.assertEqual(d['foobar'], '1')
 
+	def test_escaped_quotes(self):
+		s = r"$foobar = 'foo\'s bar';"
+
+		d = self.parse_and_assert(s)
+		self.assertEqual(len(d), 1)
+		self.assertEqual(d.keys()[0], 'foobar')
+		self.assertEqual(d['foobar'], "foo's bar")
+
 	def test_invalid_input(self):
 		s = "foobar"
 
