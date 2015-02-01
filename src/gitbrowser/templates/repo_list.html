@@ -1,8 +1,9 @@
 {% extends "template.html" %}
 {% load bootstrap3 %}
 
-{% block content %}
+{% block title %}{% if browse_path %}{{browse_path}} :: {% endif %}Repository Listing{% endblock %}
 
+{% block content %}
 	<table class="table table-condensed">
 		{% for repo in repositories %}
 

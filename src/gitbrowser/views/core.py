@@ -24,6 +24,7 @@ class ListRepositoriesView(TemplateView):
 		logging.info("Listing path: %s" % path)
 		d['repositories'] = lambda: config.lister.list(self.request.user, path, flat=config.list_flat)
 		d['browse_path_items'] = generate_breadcrumb_path(path)
+		d['browse_path'] = path
 		return d
 
 

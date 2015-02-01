@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		{% block whole_title %}<title>{% block title %}Repository Listing{% endblock %}</title>{% endblock %}
+		{% block whole_title %}<title>{% block title %}{% endblock %}</title>{% endblock %}
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -31,13 +31,13 @@
 							{% endif %}
 						{% endfor %}
 					</ul>
-				</div>
-				<div class="navbar-right">
-					{% if user.is_authenticated %}
-						<a href="{% url 'logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
-					{% else %}
-						<a href="{% url 'login' %}" title="Login" class="btn btn-success navbar-btn" role="button">Login</a>
-					{% endif %}
+					<div class="navbar-right login-logout">
+						{% if user.is_authenticated %}
+							<a href="{% url 'logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
+						{% else %}
+							<a href="{% url 'login' %}" title="Login" class="btn btn-success navbar-btn" role="button">Login</a>
+						{% endif %}
+					</div>
 				</div>
 			</div>
 		</nav>
