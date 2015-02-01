@@ -68,12 +68,9 @@ class GitoliteProjectsFileRepositoryLister(RepositoryLister):
 			return obj.relative_path[start:end]
 
 		def repo_or_dir_iter():
-			for directory, repos_in_dir in itertools.groupby(readable_repositories,
-										key=my_key):
-				logging.info(directory)
+			for directory, repos_in_dir in itertools.groupby(readable_repositories, key=my_key):
 				if directory == '':
 					for r in repos_in_dir:
-						logging.debug("Repo: %s" % r)
 						yield r
 				else:
 					yield GitRepositoryContainer(name=directory, relative_path=path + directory.rstrip('/'))
