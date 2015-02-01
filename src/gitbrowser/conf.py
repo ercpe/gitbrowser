@@ -44,7 +44,7 @@ class GitbrowserConf(object):
 
 	@property
 	def acl(self):
-		from gitbrowser.utils import acl as acl_module
+		from gitbrowser import acl as acl_module
 		acl_class = self.gbconf.get('acl', 'DenyAllACL')
 		return getattr(acl_module, acl_class)()
 
@@ -57,6 +57,10 @@ class GitbrowserConf(object):
 		cfg_value = self.gbconf.get('display', {}).get('list_style', 'flat')
 		assert cfg_value in ('flat', 'hierarchical'), 'list_style must be one of "flat",  "hierarchical"'
 		return cfg_value == 'flat'
+
+	@property
+	def acl_debug(self):
+		return self.gbconf.get('debug', {}).get('acl', False) is True
 
 	def feature_enabled(self, feature_name):
 		features = FEATURE_DEFAULTS
