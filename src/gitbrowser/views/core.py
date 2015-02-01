@@ -13,6 +13,8 @@ from gitbrowser.conf import config
 from gitbrowser.templatetags.gb_tags import time_tag
 from gitbrowser.utils.misc import generate_breadcrumb_path
 
+def dev_null(request):
+	raise Http404
 
 class ListRepositoriesView(TemplateView):
 	template_name = 'repo_list.html'
