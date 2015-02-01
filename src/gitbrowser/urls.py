@@ -7,7 +7,8 @@ from gitbrowser.views.core import ListRepositoriesView, BrowseTreeView, BrowseBl
 urlpatterns = patterns('',
 	url(r'^favicon\.ico', dev_null),
 
-	url(r'^_styles.css$', styles, name='styles'),
+	url(r'^_gitbrowser_meta/styles.css$', styles, name='styles'),
+	url(r'^_gitbrowser_meta/avatar/$', ContributerAvatarView.as_view(), name='avatar'),
 
 	url(r'^(?P<path>.+\.git)/blob/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseBlobView.as_view(), name='browse_blob'),
 	url(r'^(?P<path>.+\.git)/_data/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', RepositoryTreeData.as_view(), name='tree_data'),
@@ -17,8 +18,6 @@ urlpatterns = patterns('',
 	url(r'^(?P<path>.+\.git)/tags/(?P<tag>[\w\d\-\.]+)\.tar\.(?P<format>gz)$', RepositoryArchiveView.as_view(), name='archive'),
 	url(r'^(?P<path>.+\.git)/tags/$', RepositoryTagsView.as_view(), name='tags'),
 	url(r'^(?P<path>.+\.git)/?$', BrowseTreeView.as_view(), name='browse'),
-
-	url(r'^_avatar/$', ContributerAvatarView.as_view(), name='avatar'),
 
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
 	url(r'^$', ListRepositoriesView.as_view(), name='list'),
