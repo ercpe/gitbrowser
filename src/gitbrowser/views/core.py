@@ -7,59 +7,28 @@ from django.core.paginator import EmptyPage
 from django.http.response import Http404, StreamingHttpResponse, HttpResponse
 from django.template.base import Template
 from django.template.context import Context
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import TemplateView, View, ContextMixin
 from django.views.generic.detail import DetailView
 from gitbrowser.conf import config
 from gitbrowser.templatetags.gb_tags import time_tag
 from gitbrowser.utils.misc import generate_breadcrumb_path
+from gitbrowser.views.mixins import BreadcrumbMixin, TreeOperationMixin
+
 
 def dev_null(request):
 	raise Http404
 
-class ListRepositoriesView(TemplateView):
+class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 	template_name = 'repo_list.html'
 
-	def get_context_data(self, path='', **kwargs):
-		d = super(ListRepositoriesView, self).get_context_data()
-		logging.info("Listing path: %s" % path)
-		d['repositories'] = lambda: config.lister.list(self.request.user, path, flat=config.list_flat)
-		d['browse_path_items'] = generate_breadcrumb_path(path)
-		d['browse_path'] = path
+	def get_context_data(self, **kwargs):
+		d = super(ListRepositoriesView, self).get_context_data(**kwargs)
+		d['repositories'] = lambda: config.lister.list(self.request.user, kwargs.get('path', ''), flat=config.list_flat)
 		return d
 
 
-class TreeOperationMixin(object):
-
-	def __init__(self, *args, **kwargs):
-		self._repo = None
-
-	@property
-	def repository(self):
-		if not self._repo:
-			repo = config.lister.get_repository(self.request.user, self.kwargs['path'])
-			if not repo:
-				raise Http404
-
-			repo_ref = self.kwargs.get('ref', 'master')
-			repo_path = self.kwargs.get('repo_path', '')
-
-			repo.set_list_filter(repo_ref, repo_path)
-
-			self._repo = repo
-		return self._repo
-
-	def get_context_data(self, **kwargs):
-		ctx = super(TreeOperationMixin, self).get_context_data(**kwargs)
-		ctx['repository'] = self.repository
-		return ctx
-
-
-class BrowseTreeView(TreeOperationMixin, DetailView):
+class BrowseTreeView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_browse.html'
-	context_object_name = 'repository'
-
-	def get_object(self, queryset=None):
-		return self.repository
 
 
 class RepositoryTreeData(TreeOperationMixin, View):
