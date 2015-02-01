@@ -9,6 +9,8 @@ urlpatterns = patterns('',
 
 	url(r'^_gitbrowser_meta/styles.css$', styles, name='styles'),
 	url(r'^_gitbrowser_meta/avatar/$', ContributerAvatarView.as_view(), name='avatar'),
+	url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
+	url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
 
 	url(r'^(?P<path>.+\.git)/blob/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseBlobView.as_view(), name='browse_blob'),
 	url(r'^(?P<path>.+\.git)/_data/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', RepositoryTreeData.as_view(), name='tree_data'),
