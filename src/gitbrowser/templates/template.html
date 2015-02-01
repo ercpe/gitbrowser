@@ -22,7 +22,7 @@
 				<div id="navbar">
 
 					<ul class="nav navbar-nav">
-						<li><a href="{% url 'list' '' %}" title="Projects">Projects</a></li>
+						<li><a href="{% url 'list' %}" title="Projects">Projects</a></li>
 						<li class="navbar-text hidden-xs">/<li>
 						{% for path, label in browse_path_items %}
 							<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
