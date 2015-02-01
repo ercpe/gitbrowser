@@ -48,6 +48,11 @@ class TreeOperationMixin(object):
 			self._repo = repo
 		return self._repo
 
+	def get_context_data(self, **kwargs):
+		ctx = super(TreeOperationMixin, self).get_context_data(**kwargs)
+		ctx['repository'] = self.repository
+		return ctx
+
 
 class BrowseTreeView(TreeOperationMixin, DetailView):
 	template_name = 'repo_browse.html'
@@ -87,9 +92,6 @@ class BrowseBlobView(TreeOperationMixin, DetailView):
 	def get_object(self, queryset=None):
 		return self.repository.items().next()
 
-	def get_context_data(self, **kwargs):
-		return super(BrowseBlobView, self).get_context_data(repository=self.repository)
-
 
 class CommitDetailView(TreeOperationMixin, DetailView):
 	template_name = 'commit_detail.html'
@@ -98,18 +100,15 @@ class CommitDetailView(TreeOperationMixin, DetailView):
 	def get_object(self, queryset=None):
 		return self.repository.get_commit(self.kwargs['commit_id'])
 
-	def get_context_data(self, **kwargs):
-		return super(CommitDetailView, self).get_context_data(repository=self.repository)
-
 
 class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_commits.html'
 
 	def get_context_data(self, **kwargs):
 		# TODO: Show error page if the reference does not exist
-		d = super(RepositoryCommitsListView, self).get_context_data(repository=self.repository)
+		d = super(RepositoryCommitsListView, self).get_context_data(**kwargs)
 
-		paginator = Paginator(self.repository.commit_list, 25) # Show 25 contacts per page
+		paginator = Paginator(self.repository.commit_list, 25)
 
 		page = self.request.GET.get('page')
 		try:
@@ -126,9 +125,6 @@ class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 
 class RepositoryTagsView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_tags.html'
-
-	def get_context_data(self, **kwargs):
-		return super(RepositoryTagsView, self).get_context_data(repository=self.repository)
 
 
 class RepositoryArchiveView(TreeOperationMixin, View):
