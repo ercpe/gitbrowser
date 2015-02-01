@@ -64,12 +64,15 @@ Blob.latest_commit = latest_commit_patch
 ###
 Tree.latest_commit = latest_commit_patch
 
+def clean_path(s):
+	return s[:-4] if s.endswith('.git') else s
+
 class GitRepository(object):
 
 	def __init__(self, fs_path, relative_path):
 		self.repo_path = fs_path
 		self.name = os.path.basename(fs_path)
-		self.clean_name = self.name[:-4] if self.name.endswith('.git') else self.name
+
 		self.path = os.path.dirname(relative_path)
 		self.relative_path = relative_path
 
@@ -85,6 +88,18 @@ class GitRepository(object):
 
 	def __repr__(self):
 		return self.relative_path
+
+	@property
+	def clean_path(self):
+		return clean_path(self.repo_path)
+
+	@property
+	def clean_name(self):
+		return clean_path(self.name)
+
+	@property
+	def clean_relative_path(self):
+		return clean_path(self.relative_path)
 
 	@property
 	def repo(self):
