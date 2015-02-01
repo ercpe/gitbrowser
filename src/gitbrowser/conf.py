@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 from django.conf import settings
 
 
@@ -62,10 +63,17 @@ class GitbrowserConf(object):
 	def acl_debug(self):
 		return self.gbconf.get('debug', {}).get('acl', False) is True
 
+	@property
+	def gitolite_home(self):
+		return self.get('GL_HOME', os.path.expanduser('~'))
+
 	def feature_enabled(self, feature_name):
 		features = FEATURE_DEFAULTS
 		features.update(self.gbconf.get('features', {}))
 		return features.get(feature_name, False) is True
+
+	def get(self, item, default=None):
+		return self.gbconf.get(item, default)
 
 
 config = GitbrowserConf()

@@ -87,8 +87,7 @@ class GitoliteACL(ACL):
 	def __init__(self):
 		self.user_groups = {}
 		self._bigconf = None
-		# todo: make path configurable
-		self.big_conf_path = "/var/lib/gitolite/.gitolite/conf/gitolite.conf-compiled.pm"
+		self.big_conf_path = os.path.join(config.gitolite_home, ".gitolite/conf/gitolite.conf-compiled.pm")
 
 	@property
 	def bigconf(self):

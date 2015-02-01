@@ -4,6 +4,7 @@ import os
 import re
 import itertools
 from gitbrowser.acl.base import ACL
+from gitbrowser.conf import config
 from gitbrowser.utils.repo import GitRepository
 
 repository_dir_re = re.compile('\.git$')
@@ -32,9 +33,8 @@ class GitoliteProjectsFileRepositoryLister(RepositoryLister):
 
 	def __init__(self, acl, *args, **kwargs):
 		super(GitoliteProjectsFileRepositoryLister, self).__init__(acl, *args, **kwargs)
-		self.gitolite_home = '/var/lib/gitolite'
-		self.repositories_path = os.path.join(self.gitolite_home, 'repositories')
-		self.projects_file_path = os.path.join(self.gitolite_home, 'projects.list')
+		self.repositories_path = os.path.join(config.gitolite_home, 'repositories')
+		self.projects_file_path = os.path.join(config.gitolite_home, 'projects.list')
 
 	def list(self, user, path='', flat=True):
 		logging.info("Listing repositories for %s in '%s' (flat: %s)" % (user, path, flat))
