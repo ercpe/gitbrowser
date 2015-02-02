@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-	<h1>{{repository.name}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
+	<h1 class="repo-headline">{{repository.name}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
 
 	<ul class="nav nav-tabs">
 		<li role="presentation" class="active"><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}" title="Browse source tree of {{repository.name}}">Source</a></li>
