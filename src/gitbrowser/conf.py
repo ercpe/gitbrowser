@@ -54,6 +54,18 @@ class GitbrowserConf(object):
 		return self.gbconf.get('clone_url_templates', [])
 
 	@property
+	def clone_urls_builder(self):
+		default = '%(path)s'
+		value = self.gbconf.get('clone_url_templates', default)
+
+		if isinstance(value, basestring):
+			return lambda repo, user=None: [ value % { 'path': repo.relative_path } ]
+
+		assert callable(value), "Expected clone_url_templates to be a string or a callable, got %s" % value
+		logging.info("Returning callable")
+		return value
+
+	@property
 	def list_flat(self):
 		cfg_value = self.gbconf.get('display', {}).get('list_style', 'flat')
 		assert cfg_value in ('flat', 'hierarchical'), 'list_style must be one of "flat",  "hierarchical"'

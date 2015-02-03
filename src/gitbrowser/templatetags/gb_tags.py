@@ -4,9 +4,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django import template
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import date, slugify
-from django.template.defaulttags import spaceless
 from django.utils.safestring import mark_safe
-from gitbrowser.conf import config
 
 register = template.Library()
 

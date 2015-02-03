@@ -70,7 +70,7 @@ def clean_path(s):
 
 class GitRepository(object):
 
-	def __init__(self, fs_path, relative_path):
+	def __init__(self, fs_path, relative_path, user=None):
 		self.repo_path = fs_path
 		self.name = os.path.basename(fs_path)
 
@@ -83,6 +83,7 @@ class GitRepository(object):
 		self._repo_obj = None
 
 		self._commit_list = None
+		self.user = user
 
 	def __unicode__(self):
 		return self.relative_path
@@ -142,18 +143,13 @@ class GitRepository(object):
 		return self.repo.active_branch
 
 	@property
-	def clone_urls(self):
-		l = []
-		for tpl in config.clone_url_templates:
-			l.append(tpl % {
-				'path': self.relative_path
-			})
-		return l
-
-	@property
 	def list_filter_root(self):
 		""":return bool True if the current list filter points to the root of the repository"""
 		return self.list_filter_path.rstrip('/') == ""
+
+	@property
+	def clone_urls(self):
+		return config.clone_urls_builder(self, self.user.username if self.user else None)
 
 	@property
 	def readme(self):

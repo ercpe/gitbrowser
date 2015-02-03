@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from gitbrowser.conf import config
+
 
 def generate_breadcrumb_path(path):
 	l = []
@@ -7,3 +9,7 @@ def generate_breadcrumb_path(path):
 			continue
 		l.append(chunk)
 		yield '/'.join(l), chunk
+
+
+def clone_urls(repo, user):
+	return config.clone_urls_builder(repo, user)

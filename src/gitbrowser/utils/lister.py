@@ -51,7 +51,7 @@ class GitoliteProjectsFileRepositoryLister(RepositoryLister):
 					logging.debug("Repository path %s out of scope for path %s" % (rel_path, path))
 					continue
 
-				repo = GitRepository(os.path.join(self.repositories_path, line.strip()), rel_path)
+				repo = GitRepository(os.path.join(self.repositories_path, line.strip()), rel_path, user)
 				if self.acl.can_read(user, repo):
 					readable_repositories.append(repo)
 

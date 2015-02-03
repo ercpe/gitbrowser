@@ -8,7 +8,6 @@ from gitbrowser.utils.misc import generate_breadcrumb_path
 class BreadcrumbMixin(object):
 
 	def get_context_data(self, **kwargs):
-		logging.info("BC: %s" % kwargs)
 		ctx = super(BreadcrumbMixin, self).get_context_data(**kwargs)
 
 		if 'path' in kwargs:
