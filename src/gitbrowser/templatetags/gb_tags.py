@@ -3,6 +3,7 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django import template
 from django.core.urlresolvers import reverse
+from django.template.base import TemplateSyntaxError
 from django.template.defaultfilters import date, slugify
 from django.utils.safestring import mark_safe
 
@@ -37,3 +38,30 @@ def author_tag(author, with_avatar=True, itemprops=['author']):
 		'itemprops': ('itemprop="%s" ' % ' '.join(itemprops)) if itemprops else '',
 	}
 	return markup
+
+
+@register.tag('bootstrap_tab')
+def do_bootstrap_tab(parser, token):
+	try:
+		tag_name, tab_name = token.split_contents()
+		if not (tab_name[0] == tab_name[-1] and tab_name[0] in ('"', "'")):
+			raise template.TemplateSyntaxError("%r tag's argument should be in quotes" % tag_name)
+	except ValueError:
+		raise TemplateSyntaxError("%r tag takes exact two parameter" % token.contents.split()[0])
+
+	nodelist = parser.parse(('endbootstrap_tab',))
+	parser.delete_first_token()
+	return BootstrapTabNode(nodelist, tab_name[1:-1])
+
+
+class BootstrapTabNode(template.Node):
+
+	def __init__(self, nodelist, tabname):
+		self.nodelist = nodelist
+		self.tabname = tabname
+
+	def render(self, context):
+		output = self.nodelist.render(context)
+
+		css = ' class="active"' if context.get('current_tab', None) == self.tabname else ""
+		return '<li role="presentation"%s>' % css + output + '</li>'

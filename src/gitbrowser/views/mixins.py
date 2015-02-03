@@ -18,6 +18,7 @@ class BreadcrumbMixin(object):
 
 
 class TreeOperationMixin(BreadcrumbMixin):
+	current_tab = None
 
 	def __init__(self, *args, **kwargs):
 		self._repo = None
@@ -40,4 +41,5 @@ class TreeOperationMixin(BreadcrumbMixin):
 	def get_context_data(self, **kwargs):
 		ctx = super(TreeOperationMixin, self).get_context_data(**kwargs)
 		ctx['repository'] = self.repository
+		ctx['current_tab'] = getattr(self, 'current_tab', None)
 		return ctx

@@ -1,4 +1,5 @@
 {% extends "template.html" %}
+{% load gb_tags %}
 
 {% block scripts %}
 	<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
@@ -9,10 +10,16 @@
 	<h1 class="repo-headline">{{repository.name}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
 
 	<ul class="nav nav-tabs">
-		<li role="presentation" class="active"><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}" title="Browse source tree of {{repository.name}}">Source</a></li>
-		<li role="presentation"><a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}" title="Commits for {{repository.name}}">Commits</a></li>
-		<li role="presentation"><a href="{% url 'tags' repository.relative_path %}" title="Tags in {{repository.name}}">Tags</a></li>
-		<li role="presentation"><a href="#" title="Stats for {{repository.name}}">Stats</a></li>
+		{% bootstrap_tab 'source' %}
+			<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}" title="Browse source tree of {{repository.name}}">Source</a>
+		{% endbootstrap_tab %}
+		{% bootstrap_tab 'commits' %}
+			<a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}" title="Commits for {{repository.name}}">Commits</a>
+		{% endbootstrap_tab %}
+		{% bootstrap_tab 'tags' %}
+			<a href="{% url 'tags' repository.relative_path %}" title="Tags in {{repository.name}}">Tags</a>
+		{% endbootstrap_tab %}
+		{% bootstrap_tab 'stats' %}<a href="#" title="Stats for {{repository.name}}">Stats</a>{% endbootstrap_tab %}
 
 		<li role="presentation" class="dropdown pull-right branch-selector">
 			<a class="dropdown-toggle text-muted" data-toggle="dropdown" href="#" role="button" aria-expanded="false">

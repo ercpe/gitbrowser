@@ -29,7 +29,7 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 
 class BrowseTreeView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_browse.html'
-
+	current_tab = 'source'
 
 class RepositoryTreeData(TreeOperationMixin, View):
 
@@ -53,6 +53,7 @@ class RepositoryTreeData(TreeOperationMixin, View):
 class BrowseBlobView(TreeOperationMixin, DetailView):
 	template_name = 'repo_blob.html'
 	context_object_name = 'blob'
+	current_tab = 'source'
 
 	def __init__(self, *args, **kwargs):
 		super(BrowseBlobView, self).__init__(*args, **kwargs)
@@ -72,6 +73,7 @@ class CommitDetailView(TreeOperationMixin, DetailView):
 
 class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_commits.html'
+	current_tab = 'commits'
 
 	def get_context_data(self, **kwargs):
 		# TODO: Show error page if the reference does not exist
@@ -94,7 +96,7 @@ class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 
 class RepositoryTagsView(TreeOperationMixin, TemplateView):
 	template_name = 'repo_tags.html'
-
+	current_tab = 'tags'
 
 class RepositoryArchiveView(TreeOperationMixin, View):
 
