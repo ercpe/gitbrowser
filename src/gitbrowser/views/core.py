@@ -9,9 +9,8 @@ from django.template.base import Template
 from django.template.context import Context
 from django.views.generic.base import TemplateView, View, ContextMixin
 from django.views.generic.detail import DetailView
-from gitbrowser.conf import config
+from gitbrowser.conf import config, LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL, LIST_STYLE_TREE
 from gitbrowser.templatetags.gb_tags import time_tag
-from gitbrowser.utils.misc import generate_breadcrumb_path
 from gitbrowser.views.mixins import BreadcrumbMixin, RepositoryMixin
 
 
@@ -19,11 +18,23 @@ def dev_null(request):
 	raise Http404
 
 class ListRepositoriesView(BreadcrumbMixin, TemplateView):
-	template_name = 'repo_list.html'
+
+	def get_template_names(self):
+		if config.list_style in (LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL):
+			return ['repo_list.html']
+		if config.list_style == LIST_STYLE_TREE:
+			return ['repo_list_tree.html']
 
 	def get_context_data(self, **kwargs):
 		d = super(ListRepositoriesView, self).get_context_data(**kwargs)
-		d['repositories'] = lambda: config.lister.list(self.request.user, kwargs.get('path', ''), flat=config.list_flat)
+
+		repositories = config.lister.list(self.request.user, kwargs.get('path', ''),
+											flat=config.list_style in (LIST_STYLE_FLAT, LIST_STYLE_TREE))
+
+		if config.list_style in (LIST_STYLE_FLAT, LIST_STYLE_TREE):
+			repositories = sorted(repositories, key=lambda x: x.path)
+
+		d['repositories'] = repositories
 		return d
 
 
@@ -97,6 +108,7 @@ class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 class RepositoryTagsView(RepositoryMixin, TemplateView):
 	template_name = 'repo_tags.html'
 	current_tab = 'tags'
+
 
 class RepositoryArchiveView(RepositoryMixin, View):
 

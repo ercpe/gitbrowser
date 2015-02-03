@@ -1,0 +1,44 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% load gb_tags %}
+
+{% block title %}{% if browse_path %}{{browse_path}} :: {% endif %}Repository Listing{% endblock %}
+
+{% block content %}
+
+	{% regroup repositories by path as grouped_repositories %}
+
+	<table class="table table-condensed">
+	{% for group in grouped_repositories %}
+		{% if group.grouper %}
+			<tr>
+				<th colspan="3" id="{{group.grouper|slugify}}">{{group.grouper}}</th>
+			</tr>
+		{% endif %}
+		{% for repo in group.list %}
+			<tr>
+				<td>
+					{% if repo.repo %}
+						{% bootstrap_icon "list-alt" %}
+						<a href="{% url 'browse' repo.relative_path %}" title="{{repo.description|default:repo.name}}">{{repo.name}}</a>
+					{% else %}
+						{% bootstrap_icon "tasks" %}
+						<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
+					{% endif %}
+				</td>
+				<td class="text-muted">{{repo.description}}</td>
+				<td>{% for url in repo.clone_urls %}
+					<a href="{{url}}" title="Clone URL">{{url}}</a><br />
+				{% endfor %}</td>
+			</tr>
+		{% endfor %}
+	{% empty %}
+		<tr>
+			<td>
+				<p>No repositories found.</p>
+			</td>
+		</tr>
+	{% endfor %}
+	</table>
+
+{% endblock %}

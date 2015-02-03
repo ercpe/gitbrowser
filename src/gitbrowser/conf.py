@@ -23,6 +23,11 @@ CONFIG_DEFAULTS = {
 	'clone_url_templates': ['ssh://git@YOUR-SERVER-NAME/%(path)s'],
 }
 
+LIST_STYLE_FLAT = "flat"
+LIST_STYLE_HIERARCHICAL = "hierarchical"
+LIST_STYLE_TREE = "tree"
+
+LIST_STYLES = (LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL, LIST_STYLE_TREE)
 
 class GitbrowserConf(object):
 
@@ -67,9 +72,13 @@ class GitbrowserConf(object):
 
 	@property
 	def list_flat(self):
+		return self.list_style == LIST_STYLE_FLAT
+
+	@property
+	def list_style(self):
 		cfg_value = self.gbconf.get('display', {}).get('list_style', 'flat')
-		assert cfg_value in ('flat', 'hierarchical'), 'list_style must be one of "flat",  "hierarchical"'
-		return cfg_value == 'flat'
+		assert cfg_value in LIST_STYLES, 'list_style must be one of %s' % ', '.join(LIST_STYLES)
+		return cfg_value
 
 	@property
 	def acl_debug(self):
