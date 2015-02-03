@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from gitbrowser.conf import config
 from gitbrowser.templatetags.gb_tags import time_tag
 from gitbrowser.utils.misc import generate_breadcrumb_path
-from gitbrowser.views.mixins import BreadcrumbMixin, TreeOperationMixin
+from gitbrowser.views.mixins import BreadcrumbMixin, RepositoryMixin
 
 
 def dev_null(request):
@@ -27,11 +27,11 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 		return d
 
 
-class BrowseTreeView(TreeOperationMixin, TemplateView):
+class BrowseTreeView(RepositoryMixin, TemplateView):
 	template_name = 'repo_browse.html'
 	current_tab = 'source'
 
-class RepositoryTreeData(TreeOperationMixin, View):
+class RepositoryTreeData(RepositoryMixin, View):
 
 	def get(self, request, *args, **kwargs):
 		def _inner():
@@ -50,7 +50,7 @@ class RepositoryTreeData(TreeOperationMixin, View):
 		return StreamingHttpResponse(_inner(), content_type='text/event-stream')
 
 
-class BrowseBlobView(TreeOperationMixin, DetailView):
+class BrowseBlobView(RepositoryMixin, DetailView):
 	template_name = 'repo_blob.html'
 	context_object_name = 'blob'
 	current_tab = 'source'
@@ -63,7 +63,7 @@ class BrowseBlobView(TreeOperationMixin, DetailView):
 		return self.repository.items().next()
 
 
-class CommitDetailView(TreeOperationMixin, DetailView):
+class CommitDetailView(RepositoryMixin, DetailView):
 	template_name = 'commit_detail.html'
 	context_object_name = 'commit'
 
@@ -71,7 +71,7 @@ class CommitDetailView(TreeOperationMixin, DetailView):
 		return self.repository.get_commit(self.kwargs['commit_id'])
 
 
-class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
+class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 	template_name = 'repo_commits.html'
 	current_tab = 'commits'
 
@@ -94,11 +94,11 @@ class RepositoryCommitsListView(TreeOperationMixin, TemplateView):
 		return d
 
 
-class RepositoryTagsView(TreeOperationMixin, TemplateView):
+class RepositoryTagsView(RepositoryMixin, TemplateView):
 	template_name = 'repo_tags.html'
 	current_tab = 'tags'
 
-class RepositoryArchiveView(TreeOperationMixin, View):
+class RepositoryArchiveView(RepositoryMixin, View):
 
 	def get(self, *args, **kwargs):
 		tag = kwargs.get('tag')
