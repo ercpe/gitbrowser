@@ -52,6 +52,7 @@ class BrowseBlobView(RepositoryMixin, DetailView):
 class CommitDetailView(RepositoryMixin, DetailView):
 	template_name = 'commit_detail.html'
 	context_object_name = 'commit'
+	current_tab = 'commits'
 
 	def get_object(self, queryset=None):
 		return self.repository.get_commit(self.kwargs['commit_id'])

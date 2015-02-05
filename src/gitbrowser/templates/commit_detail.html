@@ -1,4 +1,4 @@
-{% extends "template.html" %}
+{% extends "repository_template.html" %}
 {% load gb_tags %}
 {% load humanize %}
 {% load highlight %}
@@ -9,9 +9,7 @@
 
 {% block title %}{{commit.summary}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
-{% block content %}
-	<h1 class="repo-headline">{{repository.name}}{% if repository.description %} <small>{{repository.description}}</small>{% endif %}</h1>
-
+{% block repository_content %}
 	<div itemscope itemtype="http://schema.org/CreativeWork" itemrefs="author_{{commit.author.email|slugify}}">
 		<meta itemprop="author accountablePerson" content="author_{{commit.author.email|slugify}}">
 		<div class="panel panel-default">
