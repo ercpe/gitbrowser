@@ -14,7 +14,7 @@ from gitbrowser.views.mixins import RepositoryMixin
 
 
 class BrowseTreeView(RepositoryMixin, TemplateView):
-	template_name = 'repo_browse.html'
+	template_name = 'repository/browse.html'
 	current_tab = 'source'
 	can_switch_branches = True
 
@@ -39,7 +39,7 @@ class RepositoryTreeData(RepositoryMixin, View):
 
 
 class BrowseBlobView(RepositoryMixin, DetailView):
-	template_name = 'repo_blob.html'
+	template_name = 'repository/blob.html'
 	context_object_name = 'blob'
 	current_tab = 'source'
 
@@ -52,7 +52,7 @@ class BrowseBlobView(RepositoryMixin, DetailView):
 
 
 class CommitDetailView(RepositoryMixin, DetailView):
-	template_name = 'commit_detail.html'
+	template_name = 'repository/commit_detail.html'
 	context_object_name = 'commit'
 	current_tab = 'commits'
 
@@ -61,7 +61,7 @@ class CommitDetailView(RepositoryMixin, DetailView):
 
 
 class RepositoryCommitsListView(RepositoryMixin, TemplateView):
-	template_name = 'repo_commits.html'
+	template_name = 'repository/commits.html'
 	current_tab = 'commits'
 	can_switch_branches = True
 
@@ -85,7 +85,7 @@ class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 
 
 class RepositoryTagsView(RepositoryMixin, TemplateView):
-	template_name = 'repo_tags.html'
+	template_name = 'repository/tags.html'
 	current_tab = 'tags'
 
 

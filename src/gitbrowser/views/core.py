@@ -13,9 +13,9 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 
 	def get_template_names(self):
 		if config.list_style in (LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL):
-			return ['repo_list.html']
+			return ['repository/list.html']
 		if config.list_style == LIST_STYLE_TREE:
-			return ['repo_list_tree.html']
+			return ['repository/list_tree.html']
 
 	def get_context_data(self, **kwargs):
 		d = super(ListRepositoriesView, self).get_context_data(**kwargs)
