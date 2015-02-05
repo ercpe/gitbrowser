@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
 from gitbrowser.views.aux import styles, ContributerAvatarView
-from gitbrowser.views.core import ListRepositoriesView, BrowseTreeView, BrowseBlobView, \
+from gitbrowser.views.core import ListRepositoriesView, dev_null
+from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
-	RepositoryTreeData, dev_null
+	RepositoryTreeData
 
 urlpatterns = patterns('',
 	url(r'^favicon\.ico', dev_null),
