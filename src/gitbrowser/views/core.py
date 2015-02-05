@@ -30,3 +30,6 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 		return d
 
 
+class RepositoryOverviewView(RepositoryMixin, TemplateView):
+	template_name = 'repository/overview.html'
+	current_tab = 'overview'

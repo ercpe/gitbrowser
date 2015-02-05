@@ -1,0 +1,74 @@
+{% extends "repository_browse_template.html" %}
+{% load gb_tags %}
+{% load humanize %}
+{% load bootstrap3 %}
+
+{% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+
+{% block repository_browse_content %}
+
+	{% if repository.items %}
+		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList">
+			{% if repository.list_filter_path_items|length > 0 %}
+				<tr>
+					<td class="tree-item-name">
+						<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path_items|slice:":-1"|last|first %}"
+									title="Browse {{repository.list_filter_path_items|slice:":-1"|last|last}}">..
+						</a></td>
+					<td colspan="2"></td>
+				</tr>
+			{% endif %}
+
+			{% for item in repository.items %}
+				<tr itemprop="itemListElement">
+					<td class="tree-item-name">
+						{% if item.type == 'blob' %}
+							{% bootstrap_icon "file" %}
+						{% else %}
+							{% bootstrap_icon "folder-close" %}
+						{% endif %}
+						<a href="
+							{% if item.type == 'blob' %}
+								{% url 'browse_blob' repository.relative_path repository.list_filter_ref item.path %}
+							{% else %}
+								{% url 'browse_ref' repository.relative_path repository.list_filter_ref item.path %}
+							{% endif %}"
+						   title="Show {{item.name}}" itemprop="name url">
+
+							{{item.name}}</a>
+					</td>
+					<td class="text-muted tree-item-latest-commit" id="commit_{{item.hexsha}}"></td>
+					<td class="text-muted tree-item-latest-commit-date" id="datetime_{{item.hexsha}}"></td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<p>This is an empty repository</p>
+	{% endif %}
+
+	{% if repository.readme %}
+		<div class="panel panel-default">
+			<div class="panel-heading"><h4 class="panel-title" id="readme">{% bootstrap_icon "list-alt" %} Readme</h4></div>
+			<div class="panel-body">
+				{{repository.readme|safe}}
+  			</div>
+		</div>
+	{% endif %}
+
+	<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var ev = new EventSource('{% url 'tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}');
+			ev.onmessage = function(e) {
+				//console.log(e.data);
+				var data = JSON.parse(e.data);
+				$('#commit_' + data['obj']).html(data['summary_link']);
+				$('#datetime_' + data['obj']).html(data['commit_datetime']);
+			};
+			ev.onerror = function(e) {
+				ev.close();
+			};
+		});
+	</script>
+
+{% endblock %}

@@ -19,6 +19,7 @@ class BreadcrumbMixin(object):
 
 class RepositoryMixin(BreadcrumbMixin):
 	current_tab = None
+	can_switch_branches = False
 
 	def __init__(self, *args, **kwargs):
 		self._repo = None
@@ -42,4 +43,5 @@ class RepositoryMixin(BreadcrumbMixin):
 		ctx = super(RepositoryMixin, self).get_context_data(**kwargs)
 		ctx['repository'] = self.repository
 		ctx['current_tab'] = getattr(self, 'current_tab', None)
+		ctx['can_switch_branches'] = getattr(self, 'can_switch_branches', False)
 		return ctx

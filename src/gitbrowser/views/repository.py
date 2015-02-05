@@ -16,6 +16,8 @@ from gitbrowser.views.mixins import RepositoryMixin
 class BrowseTreeView(RepositoryMixin, TemplateView):
 	template_name = 'repo_browse.html'
 	current_tab = 'source'
+	can_switch_branches = True
+
 
 class RepositoryTreeData(RepositoryMixin, View):
 
@@ -61,6 +63,7 @@ class CommitDetailView(RepositoryMixin, DetailView):
 class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 	template_name = 'repo_commits.html'
 	current_tab = 'commits'
+	can_switch_branches = True
 
 	def get_context_data(self, **kwargs):
 		# TODO: Show error page if the reference does not exist

@@ -14,7 +14,7 @@
 			{% if repository.description %} <p>{{repository.description}}</p>{% endif %}
 			<ul class="nav nav-sidebar">
 				{% bootstrap_tab 'overview' %}
-					<a href=""
+					<a href="{% url 'overview' repository.relative_path %}"
 					   title="Overview"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Overview</a>
 				{% endbootstrap_tab %}
 
@@ -40,36 +40,37 @@
 		</div>
 
 		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-					Branch: <strong>{{repository.list_filter_ref}}</strong> <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-					{% if repository.branches|length > 1 %}
-						<li>
-							<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
-							   class="current-branch"
-							   title="Browse branch {{repository.list_filter_ref}}">{{repository.list_filter_ref}}</a>
-						</li>
-						<li role="presentation" class="divider"></li>
-						{% for branch in repository.branches %}
-							{% if branch.name != repository.list_filter_ref %}
-								<li>
-									<a href="{% url 'browse_ref' repository.relative_path branch repository.list_filter_path %}"
-											title="Browse branch {{branch}}">{{branch}}</a>
-								</li>
-							{% endif %}
-						{% endfor %}
-					{% else %}
-						<li role="presentation"><i>No other branches.</i></li>
-					{% endif %}
+			{% if can_switch_branches %}
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+						Branch: <strong>{{repository.list_filter_ref}}</strong> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+						{% if repository.branches|length > 1 %}
+							<li>
+								<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
+								   class="current-branch"
+								   title="Browse branch {{repository.list_filter_ref}}">{{repository.list_filter_ref}}</a>
+							</li>
+							<li role="presentation" class="divider"></li>
+							{% for branch in repository.branches %}
+								{% if branch.name != repository.list_filter_ref %}
+									<li>
+										<a href="{% url 'browse_ref' repository.relative_path branch repository.list_filter_path %}"
+												title="Browse branch {{branch}}">{{branch}}</a>
+									</li>
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							<li role="presentation"><i>No other branches.</i></li>
+						{% endif %}
 
-				</ul>
-			</div>
+					</ul>
+				</div>
+			{% endif %}
 
 			{% block repository_content %}
 			{% endblock %}
-
 		</div>
 	</div>
 
