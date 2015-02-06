@@ -1,25 +1,30 @@
 # -*- coding: utf-8 -*-
+import urlparse
 
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django import template
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.template.base import TemplateSyntaxError
 from django.template.defaultfilters import date, slugify
+from django.template.defaulttags import URLNode, url
 from django.utils.safestring import mark_safe
 
 register = template.Library()
 
-@register.filter
-def time_tag(datetime, label=None, autoescape=None):
+@register.simple_tag
+def time_tag(datetime, label=None, itemprops=""):
 	if not datetime:
 		return ""
 
-	s = '<time datetime="%s" title="%s">%s</time>' % (
+	s = '<time datetime="%s" title="%s"%s>%s</time>' % (
 			date(datetime, 'c'),
 			datetime,
+			(' itemprop="%s"' % itemprops) if itemprops else "",
 			label or naturaltime(datetime))
 
 	return mark_safe(s)
+
 
 @register.simple_tag
 def author_tag(author, with_avatar=True, itemprops=['author']):
@@ -65,3 +70,20 @@ class BootstrapTabNode(template.Node):
 
 		css = ' class="active"' if context.get('current_tab', None) == self.tabname else ""
 		return '<li role="presentation"%s>' % css + output + '</li>'
+
+
+# class AbsoluteURLNode(URLNode):
+# 	def render(self, context):
+# 		path = super(AbsoluteURLNode, self).render(context)
+# 		domain = "http://%s" % Site.objects.get_current().domain
+# 		return urlparse.urljoin(domain, path)
+#
+# @register.tag
+# def absurl(parser, token, node_cls=AbsoluteURLNode):
+# 	"""Just like {% url %} but ads the domain of the current site."""
+# 	node_instance = url(parser, token)
+# 	return node_cls(view_name=node_instance.view_name,
+# 		args=node_instance.args,
+# 		kwargs=node_instance.kwargs,
+# 		asvar=node_instance.asvar)
+# #absurl = register.tag(absurl)

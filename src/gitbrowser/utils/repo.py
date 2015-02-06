@@ -118,6 +118,10 @@ class GitRepository(object):
 		return self.get_config_value('gitweb', 'description', '')
 
 	@property
+	def last_update(self):
+		return self.commit_list[0].committed_datetime
+
+	@property
 	def list_filter_path_items(self):
 		"""
 		:return: a list of tuples (relative path, label) for all items in list_filter_path
@@ -230,6 +234,8 @@ class CommitListWrapper(object):
 
 	def iter_slice(self, start, stop):
 		if self._iter_slice is None:
+			start = start or 0
+			stop = stop or 20
 			self._iter_slice = list(
 				self.repo.iter_commits(self.filter_ref, paths=self.filter_path, skip=start, max_count=stop-start)
 			)
