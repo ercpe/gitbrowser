@@ -7,7 +7,7 @@
 
 {% block repository_content %}
 
-{% regroup commits by committed_datetime.date as grouped_commits %}
+	{% regroup commits by committed_datetime.date as grouped_commits %}
 
 	{% for commit_group in grouped_commits %}
 		<h5 class="text-muted" title="{{commit_group.grouper|naturalday}}">Commits on {{commit_group.grouper}}</h5>

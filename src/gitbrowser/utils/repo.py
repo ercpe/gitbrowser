@@ -39,13 +39,15 @@ Commit.stats_iter = lambda self: ((k, self.stats.files[k]['insertions'], self.st
 Commit.shorthexsha = lambda self: self.hexsha[:7]
 
 def tag_for_commit(self):
-	if self.hexsha in tag_commit_cache:
-		return self.repo.tag(tag_commit_cache.get(self.hexsha))
+	tags = tag_commit_cache.get(self.repo.head.commit.hexsha)
 
-	for t in self.repo.tags:
-		if t.commit.hexsha == self.hexsha:
-			tag_commit_cache.set(self.hexsha, t.path)
-			return t
+	if not tags:
+		tag_commit_cache.set(self.repo.head.commit.hexsha, \
+							 dict([(x.path, x.commit.hexsha) for x in self.repo.tags]))
+	if self.hexsha in tags:
+		return self.repo.tag(tags[self.hexsha])
+	return None
+
 
 Commit.tag = tag_for_commit
 
