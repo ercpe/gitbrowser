@@ -29,6 +29,10 @@ LIST_STYLE_TREE = "tree"
 
 LIST_STYLES = (LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL, LIST_STYLE_TREE)
 
+COMMIT_LIST_DEFAULT="default"
+COMMIT_LIST_CONDENSED="condensed"
+COMMIT_LIST_STYLES = (COMMIT_LIST_DEFAULT, COMMIT_LIST_CONDENSED)
+
 class GitbrowserConf(object):
 
 	def __init__(self):
@@ -75,8 +79,14 @@ class GitbrowserConf(object):
 
 	@property
 	def list_style(self):
-		cfg_value = self.gbconf.get('display', {}).get('list_style', 'flat')
+		cfg_value = self.gbconf.get('display', {}).get('list_style', LIST_STYLE_FLAT)
 		assert cfg_value in LIST_STYLES, 'list_style must be one of %s' % ', '.join(LIST_STYLES)
+		return cfg_value
+
+	@property
+	def commit_list_style(self):
+		cfg_value = self.gbconf.get('display', {}).get('commit_list_style', COMMIT_LIST_DEFAULT)
+		assert cfg_value in COMMIT_LIST_STYLES, 'commit_list_style must be one of %s' % ', '.join(COMMIT_LIST_STYLES)
 		return cfg_value
 
 	@property

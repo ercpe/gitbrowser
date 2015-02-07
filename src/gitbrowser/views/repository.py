@@ -9,6 +9,7 @@ from django.template.base import Template
 from django.template.context import Context
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
+from gitbrowser.conf import config, COMMIT_LIST_DEFAULT
 from gitbrowser.templatetags.gb_tags import time_tag
 from gitbrowser.views.mixins import RepositoryMixin
 
@@ -61,9 +62,14 @@ class CommitDetailView(RepositoryMixin, DetailView):
 
 
 class RepositoryCommitsListView(RepositoryMixin, TemplateView):
-	template_name = 'repository/commits.html'
 	current_tab = 'commits'
 	can_switch_branches = True
+
+	def get_template_names(self):
+		if config.commit_list_style == COMMIT_LIST_DEFAULT:
+			return ['repository/commits.html']
+		else:
+			return ['repository/commits_condensed.html']
 
 	def get_context_data(self, **kwargs):
 		# TODO: Show error page if the reference does not exist
