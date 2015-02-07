@@ -7,9 +7,14 @@ td.tree-item-latest-commit-date { text-align: right; width: 165px; }
 nav .container { padding-left: 0px; }
 .login-logout { position: relative; left: -15px; }
 
+.sidebar h3 { margin-top: 5px; }
+
 h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 
+.avatar-small { margin-right: 5px; width: 16px; height: 16px; }
 .commit-list img.media-object { width: 40px; height: 40px; }
+.tag-label a { color: inherit; }
+
 .commit-message {
 	font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, monospace;
 	font-size: 0.9em;
@@ -17,27 +22,23 @@ h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 
 .breadcrumb { margin-top: 10px; }
 
+.branch-selector { color: inherit; }
 .current-branch { font-weight: bold !important; }
 
-.branch-selector { color: inherit; }
-
 .highlight pre { tab-size: 4; }
-
-#footer { text-align: center; margin-bottom: 20px;}
 
 .commit-stats .insertions { color: green; }
 .commit-stats .deletions { color: red; }
 
 .highlighttable .code { width: 100%; }
 
-.avatar-small { margin-right: 5px; width: 16px; height: 16px; }
 
 .clone-url-selector { max-width: 400px; }
-
-.sidebar h3 { margin-top: 5px; }
-
-.tag-label a { color: inherit; }
 
 .commit-table h5 { margin-bottom: 0px; }
 .commit-table .commit-row .commit-author,
 .commit-table .commit-row .commit-time { white-space: nowrap;}
+
+.readme-panel .panel-body { max-width: 1000px; }
+
+#footer { text-align: center; margin-bottom: 20px;}
