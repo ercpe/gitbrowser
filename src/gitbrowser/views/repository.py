@@ -2,6 +2,7 @@
 
 from gzip import GzipFile
 import json
+import logging
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
 from django.http import StreamingHttpResponse, HttpResponse
@@ -25,17 +26,20 @@ class RepositoryTreeData(RepositoryMixin, View):
 	def get(self, request, *args, **kwargs):
 		def _inner():
 			for item in self.repository.items():
-				commit = self.repository.get_latest_commit(item)
-				yield "data: %s\n\n" % json.dumps({
-					'summary_link': Template('''<a class="text-muted"
-								href="{% url 'commit' repository.relative_path commit.hexsha %}"
-								title="{{commit.summary}}">{{commit.summary}}</a>''').render(Context({
-						'repository': self.repository,
-						'commit': commit
-					})),
-					'commit_datetime': time_tag(commit.authored_datetime()),
-					'obj': item.hexsha
-				})
+				try:
+					commit = self.repository.get_latest_commit(item)
+					yield "data: %s\n\n" % json.dumps({
+						'summary_link': Template('''<a class="text-muted"
+									href="{% url 'commit' repository.relative_path commit.hexsha %}"
+									title="{{commit.summary}}">{{commit.summary}}</a>''').render(Context({
+							'repository': self.repository,
+							'commit': commit
+						})),
+						'commit_datetime': time_tag(commit.authored_datetime()),
+						'obj': item.hexsha
+					})
+				except Exception as ex:
+					logging.exception("Caught exception while fetching latest commit for %s in %s" % (item, self.repository))
 		return StreamingHttpResponse(_inner(), content_type='text/event-stream')
 
 
