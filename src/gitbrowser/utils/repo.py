@@ -4,9 +4,6 @@ import os
 import datetime
 import traceback
 import urlparse
-from django.core.cache import get_cache
-from django.core.cache.backends.base import InvalidCacheBackendError
-
 import git
 from git.objects.tree import Tree
 from git.objects.blob import Blob
@@ -14,13 +11,20 @@ from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
 from natsort import versorted
 from gitbrowser.conf import config
+from gitbrowser.utils.cache import gitbrowser_cache
 from gitbrowser.utils.misc import generate_breadcrumb_path
 from gitbrowser.utils.rendering import get_renderer_by_name
 
-try:
-	repo_commit_cache = get_cache('repository-commits')
-except InvalidCacheBackendError:
-	repo_commit_cache = get_cache('default')
+
+# Cache that holds the hexsha of commits for blobs
+repo_commit_cache = gitbrowser_cache('repository-commits', 'latest_commit_')
+
+# Cache that holds the hexsha of commits and the paths (e.g. refs/tags/1.0) of the tag
+tag_commit_cache = gitbrowser_cache('tag-commit', 'tc')
+
+# Cache that holds the total number of commits in a repository
+repo_commit_count_cache = gitbrowser_cache('repository-commit-count', 'count')
+
 
 ###
 ### Monkey patching of git.objects.commit.Commit
@@ -34,19 +38,27 @@ Commit.committed_datetime = lambda self: datetime.datetime.fromtimestamp(self.co
 Commit.stats_iter = lambda self: ((k, self.stats.files[k]['insertions'], self.stats.files[k]['deletions']) for k in sorted(self.stats.files.keys()))
 Commit.shorthexsha = lambda self: self.hexsha[:7]
 
-def latest_commit_patch(self):
-	cache_key = "latest_commit_%s" % self.hexsha
+def tag_for_commit(self):
+	if self.hexsha in tag_commit_cache:
+		return self.repo.tag(tag_commit_cache.get(self.hexsha))
 
-	latest_commit_hexsha = repo_commit_cache.get(cache_key)
+	for t in self.repo.tags:
+		if t.commit.hexsha == self.hexsha:
+			tag_commit_cache.set(self.hexsha, t.path)
+			return t
+
+Commit.tag = tag_for_commit
+
+
+def latest_commit_patch(self):
+	latest_commit_hexsha = repo_commit_cache.get(self.hexsha)
 	if latest_commit_hexsha:
-		logging.debug("Cache HIT for %s" % cache_key)
+		logging.debug("Cache HIT for %s" % self.hexsha)
 		return git.Commit.new(self.repo, latest_commit_hexsha)
 
 	latest_commit = self.repo.iter_commits(paths=self.path, max_count=1).next()
-	repo_commit_cache.set(cache_key, latest_commit.hexsha)
-
+	repo_commit_cache.set(self.hexsha, latest_commit.hexsha)
 	return latest_commit
-
 
 ###
 ### Monkey patching of git.objects.blob.Blob
@@ -227,17 +239,14 @@ class GitRepository(object):
 	def get_latest_commit(self, item):
 		# TODO: This should be improved - albeit it seems it's fast as we can get:
 		# https://github.com/gitpython-developers/GitPython/issues/240
-		cache_key = "latest_commit_%s" % item.hexsha
 
-		latest_commit_hexsha = repo_commit_cache.get(cache_key)
-		if latest_commit_hexsha:
-			return git.Commit.new(self.repo, latest_commit_hexsha)
-
-		logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
-		latest_commit = self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
-		repo_commit_cache.set(cache_key, latest_commit.hexsha)
-
-		return latest_commit
+		if item.hexsha not in repo_commit_cache:
+			logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
+			latest_commit = self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
+			repo_commit_cache.set(item.hexsha, latest_commit.hexsha)
+			return latest_commit
+		else:
+			return git.Commit.new(self.repo, repo_commit_cache.get(item.hexsha))
 
 
 class CommitListWrapper(object):
@@ -257,14 +266,11 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		cache_key = "count_%s" % self.repo.head.commit.hexsha
-		commit_count = repo_commit_cache.get(cache_key)
-
-		if not commit_count:
+		if self.repo.head.commit.hexsha not in repo_commit_count_cache:
 			commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
-			repo_commit_cache.set(cache_key, commit_count)
+			repo_commit_count_cache.set(self.repo.head.commit.hexsha, commit_count)
 
-		return commit_count
+		return repo_commit_count_cache.get(self.repo.head.commit.hexsha)
 
 #
 	def __getitem__(self, item):
