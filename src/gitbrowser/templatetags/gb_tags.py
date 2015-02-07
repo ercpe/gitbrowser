@@ -27,16 +27,22 @@ def time_tag(datetime, label=None, itemprop=""):
 
 
 @register.simple_tag
-def author_tag(author, with_avatar=True, itemprop=['author']):
+def author_tag(author, with_avatar=True, avatar_size=16, itemprop=['author']):
 	tpl = """<span %(itemprops)s itemscope itemtype="http://schema.org/Person" id="author_%(email_slug)s">
 			%(avatar_code)s
 			<a href="mailto:%(email)s"><span itemprop="name">%(author)s</span></a><meta itemprop="email" content="%(email)s" /></span>"""
 
+	avatar_code = ""
+	if with_avatar:
+		avatar_code = '<img src="%(url)s?email=%(email)s&size=%(avatar_size)s" itemprop="image" title="%(author)s" class="avatar-small" />' % {
+			'url': reverse('avatar'),
+			'email': author.email,
+			'avatar_size': avatar_size,
+			'author': author
+		}
+
 	markup = tpl % {
-		'avatar_code': '<img src="%(avatar_url)s" itemprop="image" title="%(author)s" class="avatar-small" />' % {
-			'avatar_url': "%s?email=%s&size=16" % (reverse('avatar'), author.email),
-			'author': author.name
-		} if with_avatar else '',
+		'avatar_code': avatar_code,
 		'email': author.email,
 		'email_slug': slugify(author.email),
 		'author': author.name,
