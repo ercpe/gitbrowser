@@ -3,7 +3,7 @@ from gitbrowser.views.aux import styles, ContributerAvatarView
 from gitbrowser.views.core import ListRepositoriesView, dev_null, RepositoryOverviewView
 from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
-	RepositoryTreeData
+	RepositoryTreeData, RawBlobView
 
 urlpatterns = patterns('',
 	url(r'^favicon\.ico', dev_null),
@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 	url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
 
 	url(r'^(?P<path>.+\.git)/blob/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseBlobView.as_view(), name='browse_blob'),
+	url(r'^(?P<path>.+\.git)/raw/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.+)$', RawBlobView.as_view(), name='raw'),
 	url(r'^(?P<path>.+\.git)/_data/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', RepositoryTreeData.as_view(), name='tree_data'),
 	url(r'^(?P<path>.+\.git)/tree/(?P<ref>[\w\d\-\.]+)/?$', BrowseTreeView.as_view(), name='browse'),
 	url(r'^(?P<path>.+\.git)/tree/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseTreeView.as_view(), name='browse_ref'),

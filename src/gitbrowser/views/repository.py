@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from gzip import GzipFile
 import json
 import logging
+import urllib
+from django.utils.http import http_date
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
 from django.http import StreamingHttpResponse, HttpResponse
@@ -54,6 +55,27 @@ class BrowseBlobView(RepositoryMixin, DetailView):
 
 	def get_object(self, queryset=None):
 		return self.repository.items().next()
+
+
+class RawBlobView(RepositoryMixin, View):
+	http_method_names = ['get', 'head']
+
+	def get(self, request, *args, **kwargs):
+		obj = self.repository.items().next()
+
+		def _inner():
+			stream = obj.data_stream
+			buf = stream.read(4096)
+			while buf:
+				yield buf
+				buf = stream.read(4096)
+
+		response = StreamingHttpResponse(_inner(), content_type=obj.mime_type)
+		response['Content-Length'] = obj.size
+		response['Etag'] = obj.hexsha
+		response['Last-Modified'] = http_date(obj.latest_commit().committed_date)
+		response['Content-Disposition'] = "attachment; filename=%s" % urllib.quote(obj.name)
+		return response
 
 
 class CommitDetailView(RepositoryMixin, DetailView):
