@@ -5,7 +5,7 @@
 {% block title %}{% if browse_path %}{{browse_path}} :: {% endif %}Repository Listing{% endblock %}
 
 {% block content %}
-	<div class="wrapper">
+	<div class="wrapper table-responsive">
 		<table class="table table-condensed">
 			{% for repo in repositories %}
 
