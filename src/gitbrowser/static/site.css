@@ -37,3 +37,7 @@ h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 .sidebar h3 { margin-top: 5px; }
 
 .tag-label a { color: inherit; }
+
+.commit-table h5 { margin-bottom: 0px; }
+.commit-table .commit-row .commit-author,
+.commit-table .commit-row .commit-time { white-space: nowrap;}

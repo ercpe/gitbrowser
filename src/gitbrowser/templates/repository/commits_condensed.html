@@ -9,7 +9,7 @@
 
 {% regroup commits by committed_datetime.date as grouped_commits %}
 
-	<table class="table">
+	<table class="table commit-table">
 		{% for commit_group in grouped_commits %}
 			<tr>
 				<td colspan="3">
@@ -18,8 +18,8 @@
 			</tr>
 
 			{% for commit in commit_group.list %}
-				<tr itemscope itemtype="http://schema.org/CreativeWork">
-					<td>{% author_tag commit.author %}</td>
+				<tr itemscope itemtype="http://schema.org/CreativeWork" class="commit-row">
+					<td class="commit-author">{% author_tag commit.author %}</td>
 					<td>
 						<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
 						   itemprop="url"
@@ -29,7 +29,7 @@
 							<span class="label label-warning tag-label"><a href="{% url 'tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
 						{% endif %}
 					</td>
-					<td>
+					<td class="commit-time">
 						{% time_tag commit.committed_datetime itemprop="dateCreated" %}
 					</td>
 				</tr>
