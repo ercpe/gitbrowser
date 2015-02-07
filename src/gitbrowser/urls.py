@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.sitemaps.views import sitemap
 from gitbrowser.views.aux import styles, ContributerAvatarView
 from gitbrowser.views.core import ListRepositoriesView, dev_null, RepositoryOverviewView
+from gitbrowser.views.misc import RepositorySitemap
 from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
 	RepositoryTreeData, RawBlobView
@@ -23,6 +25,11 @@ urlpatterns = patterns('',
 	url(r'^(?P<path>.+\.git)/tags/(?P<tag>[\w\d\-\.]+)\.tar\.(?P<format>gz)$', RepositoryArchiveView.as_view(), name='archive'),
 	url(r'^(?P<path>.+\.git)/tags/$', RepositoryTagsView.as_view(), name='tags'),
 	url(r'^(?P<path>.+\.git)/?$', RepositoryOverviewView.as_view(), name='overview'),
+	url(r'^sitemap\.xml$', sitemap, {
+		'sitemaps': {
+			'projects': RepositorySitemap,
+		}
+	}, name='django.contrib.sitemaps.views.sitemap'),
 
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
 	url(r'^$', ListRepositoriesView.as_view(), name='list'),

@@ -276,8 +276,6 @@ class CommitListWrapper(object):
 
 #
 	def __getitem__(self, item):
-		logging.info("Wrapper: __getitem__(item=%s)" % item)
-
 		if isinstance(item, int):
 			return self.iter_slice(None, None)[item]
 
