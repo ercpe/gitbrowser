@@ -46,15 +46,6 @@
 		<p>This is an empty repository</p>
 	{% endif %}
 
-	{% if repository.readme %}
-		<div class="panel panel-default">
-			<div class="panel-heading"><h4 class="panel-title" id="readme">{% bootstrap_icon "list-alt" %} Readme</h4></div>
-			<div class="panel-body">
-				{{repository.readme|safe}}
-  			</div>
-		</div>
-	{% endif %}
-
 	<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
