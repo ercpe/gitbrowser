@@ -1,0 +1,16 @@
+<form class="clone-url-selector">
+	<div class="input-group">
+		<div class="input-group-btn">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<span id="clone-protocol">{{urls.0.0}}</span>
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				{% for scheme, url in urls %}
+					<li><a href="#" class="clone-protocol" data-url="{{url}}">{{scheme}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<input type="text" class="form-control" id="clone-url" value="{{urls.0.1}}">
+	</div>
+</form>

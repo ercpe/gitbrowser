@@ -31,3 +31,5 @@ h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 .highlighttable .code { width: 100%; }
 
 .avatar-small { margin-right: 5px; width: 16px; height: 16px; }
+
+.clone-url-selector { max-width: 400px; }

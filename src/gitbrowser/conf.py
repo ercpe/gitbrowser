@@ -67,7 +67,6 @@ class GitbrowserConf(object):
 			return lambda repo, user=None: [ value % { 'path': repo.relative_path } ]
 
 		assert callable(value), "Expected clone_url_templates to be a string or a callable, got %s" % value
-		logging.info("Returning callable")
 		return value
 
 	@property

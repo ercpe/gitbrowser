@@ -3,6 +3,7 @@ import logging
 import os
 import datetime
 import traceback
+import urlparse
 from django.core.cache import get_cache
 from django.core.cache.backends.base import InvalidCacheBackendError
 
@@ -152,8 +153,17 @@ class GitRepository(object):
 		return self.list_filter_path.rstrip('/') == ""
 
 	@property
+	def preferred_clone_url(self):
+		urls = self.clone_urls
+		if urls:
+			return urls[0][1]
+
+	@property
 	def clone_urls(self):
-		return config.clone_urls_builder(self, self.user.username if self.user else None)
+		return [
+			(urlparse.urlsplit(url).scheme.upper(), url) for url in \
+				config.clone_urls_builder(self, self.user.username if self.user else None)
+		]
 
 	@property
 	def readme(self):

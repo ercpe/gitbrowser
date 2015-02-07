@@ -27,7 +27,7 @@
 							   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
 						</h4>
 						<p class="text-muted">
-							{% author_tag commit.author with_avatar=False %}, <span itemprop="dateCreated">{{commit.committed_datetime|time_tag}}</span>
+							{% author_tag commit.author with_avatar=False %}, {% time_tag commit.committed_datetime itemprop="dateCreated" %}
 						</p>
 					</div>
 				</li>

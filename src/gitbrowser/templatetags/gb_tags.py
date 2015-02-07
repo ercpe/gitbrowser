@@ -13,21 +13,21 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 @register.simple_tag
-def time_tag(datetime, label=None, itemprops=""):
+def time_tag(datetime, label=None, itemprop=""):
 	if not datetime:
 		return ""
 
 	s = '<time datetime="%s" title="%s"%s>%s</time>' % (
 			date(datetime, 'c'),
 			datetime,
-			(' itemprop="%s"' % itemprops) if itemprops else "",
+			(' itemprop="%s"' % itemprop) if itemprop else "",
 			label or naturaltime(datetime))
 
 	return mark_safe(s)
 
 
 @register.simple_tag
-def author_tag(author, with_avatar=True, itemprops=['author']):
+def author_tag(author, with_avatar=True, itemprop=['author']):
 	tpl = """<span %(itemprops)s itemscope itemtype="http://schema.org/Person" id="author_%(email_slug)s">
 			%(avatar_code)s
 			<a href="mailto:%(email)s"><span itemprop="name">%(author)s</span></a><meta itemprop="email" content="%(email)s" /></span>"""
@@ -40,7 +40,7 @@ def author_tag(author, with_avatar=True, itemprops=['author']):
 		'email': author.email,
 		'email_slug': slugify(author.email),
 		'author': author.name,
-		'itemprops': ('itemprop="%s" ' % ' '.join(itemprops)) if itemprops else '',
+		'itemprops': ('itemprop="%s" ' % ' '.join(itemprop)) if itemprop else '',
 	}
 	return markup
 
@@ -72,18 +72,8 @@ class BootstrapTabNode(template.Node):
 		return '<li role="presentation"%s>' % css + output + '</li>'
 
 
-# class AbsoluteURLNode(URLNode):
-# 	def render(self, context):
-# 		path = super(AbsoluteURLNode, self).render(context)
-# 		domain = "http://%s" % Site.objects.get_current().domain
-# 		return urlparse.urljoin(domain, path)
-#
-# @register.tag
-# def absurl(parser, token, node_cls=AbsoluteURLNode):
-# 	"""Just like {% url %} but ads the domain of the current site."""
-# 	node_instance = url(parser, token)
-# 	return node_cls(view_name=node_instance.view_name,
-# 		args=node_instance.args,
-# 		kwargs=node_instance.kwargs,
-# 		asvar=node_instance.asvar)
-# #absurl = register.tag(absurl)
+@register.inclusion_tag('templatetags/clone_url_selector.html')
+def clone_url_selector(repository):
+	return {
+		'urls': repository.clone_urls
+	}

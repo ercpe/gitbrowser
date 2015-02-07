@@ -27,9 +27,7 @@
 					{% endif %}
 				</td>
 				<td class="text-muted">{{repo.description}}</td>
-				<td>{% for url in repo.clone_urls %}
-					<a href="{{url}}" title="Clone URL">{{url}}</a><br />
-				{% endfor %}</td>
+				<td>{% if repo.preferred_clone_url %}<a href="{{repo.preferred_clone_url}}" title="Clone URL">{{repo.preferred_clone_url}}</a>{% endif %}</td>
 			</tr>
 		{% endfor %}
 	{% empty %}
