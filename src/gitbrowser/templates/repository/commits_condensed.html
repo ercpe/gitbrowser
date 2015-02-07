@@ -24,6 +24,10 @@
 						<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
 						   itemprop="url"
 						   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
+
+						{% if commit.tag %}
+							<span class="label label-warning tag-label"><a href="{% url 'tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
+						{% endif %}
 					</td>
 					<td>
 						{% time_tag commit.committed_datetime itemprop="dateCreated" %}
@@ -33,33 +37,5 @@
 		{% endfor %}
 	</table>
 
-{% comment %}
-		<ul class="media-list commit-list" itemscope itemtype="http://schema.org/ItemList">
-			<meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
-			{% for commit in commit_group.list %}
-				<li class="media" itemscope itemtype="http://schema.org/CreativeWork">
-					<div class="media-left">
-						<img class="media-object img-rounded"
-							 src="{% url 'avatar' %}?email={{commit.committer.email}}&size=40"
-							 alt="{{commit.committer.name}}" title="{{commit.committer.name}}">
-					</div>
-					<div class="media-body">
-						<h4 class="media-heading">
-							<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
-							   itemprop="url"
-							   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
-						</h4>
-						<p class="text-muted">
-							{% author_tag commit.author with_avatar=False %}, {% time_tag commit.committed_datetime itemprop="dateCreated" %}
-						</p>
-					</div>
-				</li>
-			{% endfor %}
-		</ul>
-<hr />
-{% endcomment %}
-
-
 	{% bootstrap_pagination commits %}
-
 {% endblock %}

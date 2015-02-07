@@ -25,6 +25,10 @@
 							<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
 							   itemprop="url"
 							   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
+
+							{% if commit.tag %}
+								<span class="label label-warning tag-label"><a href="{% url 'tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
+							{% endif %}
 						</h4>
 						<p class="text-muted">
 							{% author_tag commit.author with_avatar=False %}, {% time_tag commit.committed_datetime itemprop="dateCreated" %}
