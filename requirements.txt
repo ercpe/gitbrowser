@@ -1,9 +1,10 @@
 django
-git-python
+gitpython
 natsort
 bootstrap3
 pygments
 markdown
+docutils
 
 # test coverage
 coverage

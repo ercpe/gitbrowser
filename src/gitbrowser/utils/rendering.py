@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.html import linebreaks
+from docutils.core import publish_parts
 import markdown
 from markdown.extensions.headerid import HeaderIdExtension
 
@@ -26,11 +27,20 @@ class MarkdownRenderer(Renderer):
 		md = markdown.Markdown(extensions)
 		return md.convert(markup)
 
+
+class RestructuredTextRenderer(Renderer):
+
+	def render(self, markup):
+		return publish_parts(markup, writer_name='html')['html_body']
+
+
 def get_renderer_by_name(name, fallback_renderer_name='text'):
 	if name == 'text':
 		return PlainTextRenderer()
 	if name == 'markdown':
 		return MarkdownRenderer()
+	if name == 'rest':
+		return RestructuredTextRenderer()
 
 	if fallback_renderer_name:
 		return get_renderer_by_name(fallback_renderer_name, None)
