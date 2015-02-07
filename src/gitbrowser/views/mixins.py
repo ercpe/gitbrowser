@@ -10,9 +10,12 @@ class BreadcrumbMixin(object):
 	def get_context_data(self, **kwargs):
 		ctx = super(BreadcrumbMixin, self).get_context_data(**kwargs)
 
-		if 'path' in kwargs:
-			ctx['browse_path'] = kwargs['path']
-			ctx['browse_path_items'] = generate_breadcrumb_path(kwargs['path'])
+		all_kwargs = self.kwargs
+		all_kwargs.update(kwargs)
+
+		if 'path' in all_kwargs:
+			ctx['browse_path'] = all_kwargs['path']
+			ctx['browse_path_items'] = generate_breadcrumb_path(all_kwargs['path'])
 
 		return ctx
 
