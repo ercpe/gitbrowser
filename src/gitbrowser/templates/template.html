@@ -27,7 +27,9 @@
 
 					<ul class="nav navbar-nav">
 						<li><a href="{% url 'list' %}" title="Projects">Projects</a></li>
-						<li class="navbar-text hidden-xs">/<li>
+						{% if browse_path_items %}
+							<li class="navbar-text hidden-xs">/<li>
+						{% endif %}
 						{% for path, label in browse_path_items %}
 							<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
 							{% if not forloop.last %}
