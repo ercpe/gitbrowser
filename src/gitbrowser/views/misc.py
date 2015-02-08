@@ -5,7 +5,9 @@ from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.utils.feedgenerator import Atom1Feed
+from django.utils.safestring import mark_safe
 from gitbrowser.conf import config
+from gitbrowser.utils.linking import Autolinker
 
 
 class RepositorySitemap(Sitemap):
@@ -75,4 +77,4 @@ class CommitsFeed(GitbrowserFeed):
 		return item.committed_datetime()
 
 	def item_description(self, item):
-		return item.message
+		return mark_safe(Autolinker().link(item.message, self._obj))
