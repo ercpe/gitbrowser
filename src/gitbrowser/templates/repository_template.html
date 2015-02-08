@@ -29,12 +29,14 @@
 					<a href="{% url 'tags' repository.relative_path %}"
 					   title="Tags in {{repository.name}}"><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Tags</a>
 				{% endbootstrap_tab %}
+				{% comment %}
 				{% bootstrap_tab 'branches' %}
 					<a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Branches</a>
 				{% endbootstrap_tab %}
 				{% bootstrap_tab 'stats' %}
 					<a href="#"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Stats</a>
 				{% endbootstrap_tab %}
+				{% endcomment %}
 			</ul>
 		</div>
 
