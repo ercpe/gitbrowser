@@ -42,12 +42,11 @@ def tag_for_commit(self):
 	tags = tag_commit_cache.get(self.repo.head.commit.hexsha)
 
 	if not tags:
-		tag_commit_cache.set(self.repo.head.commit.hexsha, \
-							 dict([(x.path, x.commit.hexsha) for x in self.repo.tags]))
+		tags = dict([(x.commit.hexsha, x.path) for x in self.repo.tags])
+		tag_commit_cache.set(self.repo.head.commit.hexsha, tags)
+
 	if self.hexsha in tags:
 		return self.repo.tag(tags[self.hexsha])
-	return None
-
 
 Commit.tag = tag_for_commit
 
@@ -241,14 +240,13 @@ class GitRepository(object):
 	def get_latest_commit(self, item):
 		# TODO: This should be improved - albeit it seems it's fast as we can get:
 		# https://github.com/gitpython-developers/GitPython/issues/240
-
-		if item.hexsha not in repo_commit_cache:
+		if item.hexsha in repo_commit_cache:
+			return git.Commit.new(self.repo, repo_commit_cache.get(item.hexsha))
+		else:
 			logging.info("Listing commits for %s in %s" % (item.path, self.list_filter_ref))
 			latest_commit = self.repo.iter_commits(rev=self.list_filter_ref, paths=item.path, max_count=1).next()
 			repo_commit_cache.set(item.hexsha, latest_commit.hexsha)
 			return latest_commit
-		else:
-			return git.Commit.new(self.repo, repo_commit_cache.get(item.hexsha))
 
 
 class CommitListWrapper(object):
@@ -268,11 +266,14 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		if self.repo.head.commit.hexsha not in repo_commit_count_cache:
+		head = self.repo.head.commit.hexsha
+		commit_count = repo_commit_count_cache.get(head)
+		if commit_count:
+			return commit_count
+		else:
 			commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
-			repo_commit_count_cache.set(self.repo.head.commit.hexsha, commit_count)
-
-		return repo_commit_count_cache.get(self.repo.head.commit.hexsha)
+			repo_commit_count_cache.set(head, commit_count)
+			return commit_count
 
 #
 	def __getitem__(self, item):

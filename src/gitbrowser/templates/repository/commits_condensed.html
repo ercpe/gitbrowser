@@ -10,8 +10,6 @@
 
 	{% regroup commits by committed_datetime.date as grouped_commits %}
 
-{% profile %}
-
 	<table class="table commit-table">
 		{% for commit_group in grouped_commits %}
 			<tr>
@@ -39,8 +37,6 @@
 			{% endfor %}
 		{% endfor %}
 	</table>
-{% endprofile %}
-
 
 	{% bootstrap_pagination commits %}
 {% endblock %}
