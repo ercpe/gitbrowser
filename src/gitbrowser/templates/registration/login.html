@@ -1,16 +1,17 @@
 {% extends "template.html" %}
 {% load bootstrap3 %}
 
-{% block content %}
+{% block body_content %}
+	<div class="container">
+		<form method="post" action="" class="form login-form" role="form">
+			{% csrf_token %}
+			{% bootstrap_form form %}
 
-	<form method="post" action="" class="form" role="form">
-		{% csrf_token %}
-		{% bootstrap_form form %}
+			{% buttons %}
+				<button type="submit" class="btn btn-primary">Login</button>
+			{% endbuttons %}
 
-		{% buttons %}
-			<button type="submit" class="btn btn-primary">Login</button>
-		{% endbuttons %}
-
-		<input type="hidden" name="next" value="{{ next }}" />
-	</form>
+			<input type="hidden" name="next" value="{{ next }}" />
+		</form>
+	</div>
 {% endblock %}
