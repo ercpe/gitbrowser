@@ -52,7 +52,6 @@ class LoginRequiredMiddleware(object):
 		exempt_urls = [re.compile(settings.LOGIN_URL.lstrip('/'))]
 		if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
 			exempt_urls += [re.compile(expr) for expr in settings.LOGIN_EXEMPT_URLS]
-			print(exempt_urls)
 
 		path = request.path_info.lstrip('/')
 		if not any(m.match(path) for m in exempt_urls):
