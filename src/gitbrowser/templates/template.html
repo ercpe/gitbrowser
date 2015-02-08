@@ -46,10 +46,10 @@
 			</div>
 		</nav>
 
-		<div class="container-fluid">
-			{% block content %}{% endblock %}
-
-			{% include "footer.html" %}
-		</div>
+		{% block body_content %}
+			<div class="container-fluid">
+				{% block content %}{% endblock %}
+			</div>
+		{% endblock %}
 	</body>
 </html>
