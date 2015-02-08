@@ -3,12 +3,12 @@ import urlparse
 
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django import template
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.template.base import TemplateSyntaxError
 from django.template.defaultfilters import date, slugify
-from django.template.defaulttags import URLNode, url
+from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
+from gitbrowser.utils.linking import Autolinker
 
 register = template.Library()
 
@@ -83,3 +83,9 @@ def clone_url_selector(repository):
 	return {
 		'urls': repository.clone_urls
 	}
+
+
+@register.simple_tag(takes_context=True)
+def autolink(context, message):
+	repository = context.get('repository', None)
+	return linebreaks(Autolinker().link(message, repository))

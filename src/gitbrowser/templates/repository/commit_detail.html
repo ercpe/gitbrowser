@@ -21,7 +21,9 @@
 			</div>
 			<div class="panel-body">
 				{% if commit.message_without_summary %}
-					<div class="commit-message" itemprop="description">{{commit.message_without_summary|linebreaks}}</div>
+					<div class="commit-message" itemprop="description">
+						{% autolink commit.message_without_summary %}
+					</div>
 				{% else %}
 					<span class="text-muted">(no more text)</span>
 				{% endif %}
@@ -36,16 +38,7 @@
 			</div>
 		</div>
 	</div>
-{% comment %}
-	<dl class="commit-stats">
-		<dt>Changed files</dt>
-		{% for filename, insertions, deletions in commit.stats_iter %}
-			<dd>
-				<a href="#{{filename|slugify}}" title="{{filename}}">{{filename}}</a> ({% if insertions %}<span class="insertions">+{{insertions}}</span>{% endif %} {% if deletions %}<span class="deletions">-{{deletions}}</span>{% endif %})
-			</dd>
-		{% endfor %}
-	</dl>
-{% endcomment %}
+
 
 	<h4>Changes</h4>
 	{% for change in commit.changes %}
