@@ -79,7 +79,7 @@ class GitbrowserConf(object):
 
 	@property
 	def list_style(self):
-		cfg_value = self.gbconf.get('display', {}).get('list_style', LIST_STYLE_FLAT)
+		cfg_value = self.gbconf.get('display', {}).get('list_style', LIST_STYLE_TREE)
 		assert cfg_value in LIST_STYLES, 'list_style must be one of %s' % ', '.join(LIST_STYLES)
 		return cfg_value
 
