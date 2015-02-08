@@ -36,7 +36,7 @@
 			</div>
 		</div>
 	</div>
-
+{% comment %}
 	<dl class="commit-stats">
 		<dt>Changed files</dt>
 		{% for filename, insertions, deletions in commit.stats_iter %}
@@ -45,10 +45,17 @@
 			</dd>
 		{% endfor %}
 	</dl>
+{% endcomment %}
 
+	<h4>Changes</h4>
 	{% for change in commit.changes %}
-		<div id="{{change.a_blob.path|slugify}}">
-			{% highlight change.diff "text/x-patch" %}
+		<div id="{{change.a_blob.path|slugify}}" class="panel panel-default diff-panel">
+			<div class="panel-heading">
+				{{change.a_blob.path}}
+			</div>
+			<div class="panel-body">
+				{% highlight change.diff "text/x-patch" %}
+			</div>
 		</div>
 	{% endfor %}
 

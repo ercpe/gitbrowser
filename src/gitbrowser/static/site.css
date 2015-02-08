@@ -19,6 +19,12 @@ h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 	font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, monospace;
 	font-size: 0.9em;
 }
+.commit-message p:last-child {
+	margin-bottom: 0px;
+}
+
+.diff-panel .panel-body { padding: 0; }
+.diff-panel .panel-body pre { margin: 0; border-radius: 0; border: none; background-color: transparent; }
 
 .breadcrumb { margin-top: 10px; }
 
