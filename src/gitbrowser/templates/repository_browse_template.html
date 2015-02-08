@@ -1,14 +1,22 @@
 {% extends "repository_template.html" %}
 
 {% block repository_content %}
-	<ol class="breadcrumb">
-		<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}" title="Browse repository root">{{repository.name}}</a></li>
+	<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+		<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+			<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}"
+			   title="Browse repository root"
+			   itemprop="item"><span itemprop="name">{{repository.name}}</span></a>
+		</li>
 		{% for path, label in repository.list_filter_path_items %}
 			{% if forloop.last %}
 				<li class="active">{{label}}</li>
 			{% else %}
-				<li><a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
-						title="Browse {{path}}">{{label}}</a></li>
+				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+					<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
+						title="Browse {{path}}"
+						itemprop="item"><span itemprop="name">{{label}}</span></a>
+					<meta itemprop="position" content="{{forloop.counter}}" />
+				</li>
 			{% endif %}
 		{% endfor %}
 	</ol>
