@@ -29,10 +29,25 @@ repo_commit_count_cache = gitbrowser_cache('repository-commit-count', 'count')
 ###
 ### Monkey patching of git.objects.commit.Commit
 ###
+
+def changes(self):
+	if self.parents:
+		for x in self.parents[0].diff(self, create_patch=True):
+			yield x
+	else:
+		tree = self.tree
+		for item in tree:
+			if not isinstance(item, Blob):
+				continue
+
+			yield {
+				'a_blob': { 'path': item.path },
+				'diff': item.data_stream.read()
+			}
+
+
 Commit.message_without_summary = lambda self: self.message[len(self.summary):].strip()
-Commit.changes = lambda self: self.parents[0].diff(self, create_patch=True) \
-								if self.parents else \
-								self.diff(None, create_patch=True)
+Commit.changes = changes
 Commit.authored_datetime = lambda self: datetime.datetime.fromtimestamp(self.authored_date)
 Commit.committed_datetime = lambda self: datetime.datetime.fromtimestamp(self.committed_date)
 Commit.stats_iter = lambda self: ((k, self.stats.files[k]['insertions'], self.stats.files[k]['deletions']) for k in sorted(self.stats.files.keys()))
