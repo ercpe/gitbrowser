@@ -38,6 +38,7 @@ h1.repo-headline { margin-top: 0px; margin-bottom: 20px; }
 .commit-table h5 { margin-bottom: 0px; }
 .commit-table .commit-row .commit-author,
 .commit-table .commit-row .commit-time { white-space: nowrap;}
+.commit-table tr:first-child td { border-top: 0px; }
 
 .readme-panel .panel-body { max-width: 1000px; }
 
