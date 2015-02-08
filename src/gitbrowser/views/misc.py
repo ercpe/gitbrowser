@@ -89,7 +89,7 @@ class RobotsTxtView(View):
 		if config.allow_anonymous:
 			content += """
 Allow: /
-Sitemap: %s""" % reverse('sitemap')
+Sitemap: %s""" % request.build_absolute_uri(reverse('sitemap'))
 		else:
 			content += "Disallow: /"
 
