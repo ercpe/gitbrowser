@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from gitbrowser.conf import config
@@ -41,3 +43,19 @@ class InterceptGitwebMiddleware(object):
 			return HttpResponseRedirect(redirect_url)
 
 		logging.warning("Could not find a redirect url for p=%s and a=%s" % (project, action))
+
+
+class LoginRequiredMiddleware(object):
+
+	def process_request(self, request):
+		logging.info(config.allow_anonymous)
+		logging.info(request.user.is_anonymous())
+
+		exempt_urls = [re.compile(settings.LOGIN_URL.lstrip('/'))]
+		if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
+			exempt_urls += [re.compile(expr) for expr in settings.LOGIN_EXEMPT_URLS]
+
+		path = request.path_info.lstrip('/')
+		if not any(m.match(path) for m in exempt_urls):
+			if (not config.allow_anonymous) and request.user.is_anonymous():
+				return HttpResponseRedirect(settings.LOGIN_URL)

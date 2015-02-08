@@ -97,6 +97,10 @@ class GitbrowserConf(object):
 	def gitolite_home(self):
 		return self.get('GL_HOME', os.path.expanduser('~'))
 
+	@property
+	def allow_anonymous(self):
+		return self.get('allow_anonymous', True)
+
 	def feature_enabled(self, feature_name):
 		features = FEATURE_DEFAULTS
 		features.update(self.gbconf.get('features', {}))
