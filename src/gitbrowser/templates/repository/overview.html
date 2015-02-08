@@ -5,8 +5,11 @@
 
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
-{% block repository_content %}
+{% block head %}
+<link rel="alternate" type="application/atom+xml" title="Commits on {{repository.name}}" href="{% url 'feed' repository.relative_path %}" />
+{% endblock %}
 
+{% block repository_content %}
 	<div itemscope itemtype="http://schema.org/SoftwareApplication">
 		<meta itemprop="url" content="{% url 'overview' repository.relative_path %}" />
 		{% if repository.tags %}
