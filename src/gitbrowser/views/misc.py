@@ -3,9 +3,10 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 from django.utils.feedgenerator import Atom1Feed
 from django.utils.safestring import mark_safe
+from django.views.generic import View
 from gitbrowser.conf import config
 from gitbrowser.utils.linking import Autolinker
 
@@ -78,3 +79,18 @@ class CommitsFeed(GitbrowserFeed):
 
 	def item_description(self, item):
 		return mark_safe(Autolinker().link(item.message, self._obj))
+
+
+class RobotsTxtView(View):
+
+	def get(self, request):
+		content = "User-agent: *\nDisallow: /accounts/"
+
+		if config.allow_anonymous:
+			content += """
+Allow: /
+Sitemap: %s""" % reverse('sitemap')
+		else:
+			content += "Disallow: /"
+
+		return HttpResponse(content, content_type='text/plain')

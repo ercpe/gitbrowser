@@ -48,12 +48,11 @@ class InterceptGitwebMiddleware(object):
 class LoginRequiredMiddleware(object):
 
 	def process_request(self, request):
-		logging.info(config.allow_anonymous)
-		logging.info(request.user.is_anonymous())
 
 		exempt_urls = [re.compile(settings.LOGIN_URL.lstrip('/'))]
 		if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
 			exempt_urls += [re.compile(expr) for expr in settings.LOGIN_EXEMPT_URLS]
+			print(exempt_urls)
 
 		path = request.path_info.lstrip('/')
 		if not any(m.match(path) for m in exempt_urls):

@@ -91,3 +91,7 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = reverse_lazy('list')
 LOGOUT_URL = LOGIN_REDIRECT_URL
+
+LOGIN_EXEMPT_URLS = [
+	'^robots\.txt$',
+]

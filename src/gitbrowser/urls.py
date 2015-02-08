@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.sitemaps.views import sitemap
 from gitbrowser.views.aux import styles, ContributerAvatarView
 from gitbrowser.views.core import ListRepositoriesView, dev_null, RepositoryOverviewView
-from gitbrowser.views.misc import RepositorySitemap, CommitsFeed
+from gitbrowser.views.misc import RepositorySitemap, CommitsFeed, RobotsTxtView
 from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
 	RepositoryTreeData, RawBlobView
@@ -30,8 +30,8 @@ urlpatterns = patterns('',
 		'sitemaps': {
 			'projects': RepositorySitemap,
 		}
-	}, name='django.contrib.sitemaps.views.sitemap'),
-
+	}, name='sitemap'),
+	url(r'^robots\.txt$', RobotsTxtView.as_view()),
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
 	url(r'^$', ListRepositoriesView.as_view(), name='list'),
 )
