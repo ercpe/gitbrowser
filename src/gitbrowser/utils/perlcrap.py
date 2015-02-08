@@ -4,6 +4,7 @@ import shlex
 
 
 class DataDumperReader(object):
+	"""Parser for dump files created by perl's Data::Dumper."""
 
 	def read(self, filename):
 		with open(filename, 'r') as f:
@@ -11,6 +12,11 @@ class DataDumperReader(object):
 			return self.parse(file_content)
 
 	def parse(self, raw):
+		"""Parses the content of `raw` into python data structures (lists, dictionaries, primitives)
+		using a mix of regular expressions and the `shlex` module.
+
+		Returns a dictionary"""
+
 		data = raw
 
 		py_data = {}
@@ -28,6 +34,8 @@ class DataDumperReader(object):
 		return py_data
 
 	def parse_block(self, block_data):
+		"""Parses a single block of markup into a python data structure"""
+
 		lexer = shlex.shlex(block_data, posix=True)
 		lexer.quotes = "'"
 		lexer.wordchars += '"'
@@ -43,6 +51,11 @@ class DataDumperReader(object):
 		return s
 
 	def parse_structure(self, lexer):
+		"""Starts the parsing process for a concrete data structure by looking at the next token.
+		Primitives are returned directly, for lists and dicts :func:`parse_dict` or :func:`parse_list`
+		are called
+		"""
+
 		token = lexer.next()
 
 		if token == '%':
@@ -68,6 +81,9 @@ class DataDumperReader(object):
 		return self.unquote(token)
 
 	def parse_dict(self, lexer):
+		"""Parses the current structure block into a python dict. Calls :func:`parse_structure` for each
+		value in the dictionary"""
+
 		token = lexer.next()
 		assert token in ('(', '{'), "Expected '(' or '{'; got %s" % token
 
@@ -87,6 +103,9 @@ class DataDumperReader(object):
 		return d
 
 	def parse_list(self, lexer):
+		"""Parses the current structure block into a python list. Calls :func:`parse_structure` for each
+		value."""
+
 		token = lexer.next()
 		assert token == '[', "Expected '['; got %s" % token
 

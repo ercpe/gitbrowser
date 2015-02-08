@@ -8,6 +8,8 @@ from gitbrowser.conf import config
 
 
 class InterceptGitwebMiddleware(object):
+	"""Django Middleware to intercept gitweb-like URLs and issue a redirect
+	to real gitbrowser urls"""
 
 	def process_request(self, request):
 		if not config.feature_enabled('intercept_gitweb_links'):
