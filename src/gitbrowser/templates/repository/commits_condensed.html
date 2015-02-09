@@ -38,5 +38,7 @@
 		{% endfor %}
 	</table>
 
-	{% bootstrap_pagination commits %}
+	{% if paginator.num_pages > 1 %}
+		{% bootstrap_pagination commits %}
+	{% endif %}
 {% endblock %}
