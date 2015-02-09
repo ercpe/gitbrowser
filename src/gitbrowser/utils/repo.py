@@ -148,7 +148,8 @@ class GitRepository(object):
 
 	@property
 	def last_update(self):
-		return self.commit_list[0].committed_datetime
+		if self.commit_list:
+			return self.commit_list[0].committed_datetime
 
 	@property
 	def list_filter_path_items(self):
@@ -281,7 +282,10 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		head = self.repo.head.commit.hexsha
+		try:
+			head = self.repo.head.commit.hexsha
+		except ValueError:
+			return 0
 		commit_count = repo_commit_count_cache.get(head)
 		if commit_count:
 			return commit_count
@@ -290,6 +294,11 @@ class CommitListWrapper(object):
 			repo_commit_count_cache.set(head, commit_count)
 			return commit_count
 
+	def __nonzero__(self):
+		return self.__bool__()
+
+	def __bool__(self):
+		return self.__len__() > 0
 #
 	def __getitem__(self, item):
 		if isinstance(item, int):
