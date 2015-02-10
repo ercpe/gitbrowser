@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 import logging
 import re
 from django.conf import settings
@@ -59,3 +60,19 @@ class LoginRequiredMiddleware(object):
 		if not any(m.match(path) for m in exempt_urls):
 			if (not config.allow_anonymous) and request.user.is_anonymous():
 				return HttpResponseRedirect(settings.LOGIN_URL)
+
+
+class ContentSecurityPolicyMiddleware(object):
+
+	def process_response(self, request, response):
+		my_url = request.build_absolute_uri('/')
+		l = [
+			('script-src', my_url),
+			('img-src', "'self' data: %s https://www.gravatar.com/avatar/" % my_url),
+			('style-src', "'self' 'unsafe-inline' %s" % my_url),
+			('connect-src', my_url),
+			('font-src', my_url),
+		]
+
+		response['Content-Security-Policy'] = '; '.join(["%s %s" % x for x in l])
+		return response

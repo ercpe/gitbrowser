@@ -5,10 +5,15 @@
 
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
+{% block scripts %}
+<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
+{% endblock %}
+
+
 {% block repository_browse_content %}
 
 	{% if repository.items %}
-		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList">
+		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList" data-url="{% url 'tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}">
 			{% if repository.list_filter_path_items|length > 0 %}
 				<tr>
 					<td class="tree-item-name">
@@ -46,20 +51,6 @@
 		<p>This is an empty repository</p>
 	{% endif %}
 
-	<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			var ev = new EventSource('{% url 'tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}');
-			ev.onmessage = function(e) {
-				//console.log(e.data);
-				var data = JSON.parse(e.data);
-				$('#commit_' + data['obj']).html(data['summary_link']);
-				$('#datetime_' + data['obj']).html(data['commit_datetime']);
-			};
-			ev.onerror = function(e) {
-				ev.close();
-			};
-		});
-	</script>
+
 
 {% endblock %}

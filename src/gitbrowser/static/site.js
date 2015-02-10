@@ -8,4 +8,16 @@ $(document).ready(function() {
 	$('#clone-url').on("click", function () {
 		$(this).select();
 	});
+
+	$('.tree-table').each(function(idx, table) {
+		var ev = new EventSource($(table).data('url'));
+		ev.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+			$('#commit_' + data['obj']).html(data['summary_link']);
+			$('#datetime_' + data['obj']).html(data['commit_datetime']);
+		};
+		ev.onerror = function(e) {
+			ev.close();
+		};
+	});
 });

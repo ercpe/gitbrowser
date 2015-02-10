@@ -53,6 +53,7 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'gitbrowser.middlewares.InterceptGitwebMiddleware',
+	'gitbrowser.middlewares.ContentSecurityPolicyMiddleware',
 )
 
 ROOT_URLCONF = 'gitbrowser.urls'
