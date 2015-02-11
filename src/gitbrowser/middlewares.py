@@ -67,7 +67,7 @@ class ContentSecurityPolicyMiddleware(object):
 		my_url = request.build_absolute_uri('/')
 		l = [
 			('script-src', my_url),
-			('img-src', "'self' data: %s https://www.gravatar.com/avatar/" % my_url),
+			('img-src', "'self' data: %s *.gravatar.com *" % my_url),
 			('style-src', "'self' 'unsafe-inline' %s" % my_url),
 			('connect-src', my_url),
 			('font-src', my_url),
