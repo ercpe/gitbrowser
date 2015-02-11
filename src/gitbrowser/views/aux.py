@@ -36,9 +36,6 @@ class ContributerAvatarView(View):
 							"rgb(141,69,170)"
 			]
 
-			# Set-up a background colour (taken from Sigil).
-			background = "rgb(255,255,255)"
-
 			generator = pydenticon.Generator(5, 5, digest=hashlib.sha1,
 												foreground=foreground)
 			identicon = generator.generate(email, size, size)
