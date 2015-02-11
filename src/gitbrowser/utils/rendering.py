@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import bleach
 from django.utils.html import linebreaks
 from docutils.core import publish_parts
 import markdown
@@ -24,14 +25,14 @@ class MarkdownRenderer(Renderer):
 			HeaderIdExtension([]),
 		]
 
-		md = markdown.Markdown(extensions)
-		return md.convert(markup)
+		md = markdown.Markdown(extensions, output_format='html5')
+		return md.convert(bleach.clean(markup))
 
 
 class RestructuredTextRenderer(Renderer):
 
 	def render(self, markup):
-		return publish_parts(markup, writer_name='html')['html_body']
+		return publish_parts(bleach.clean(markup), writer_name='html')['html_body']
 
 
 def get_renderer_by_name(name, fallback_renderer_name='text'):
