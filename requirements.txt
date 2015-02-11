@@ -6,6 +6,7 @@ pygments
 markdown
 docutils
 bleach
+pydenticon
 
 # test coverage
 coverage
