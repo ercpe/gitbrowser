@@ -9,6 +9,7 @@
 		{% block robots %}<meta name="robots" content="index,follow,noarchive" />{% endblock %}
 
 		{% block head %}{% endblock %}
+		<link rel="alternate" title="Git projects feeds" href="{% url 'opml' %}" type="text/x-opml" />
 
 		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="{{STATIC_URL}}dashboard.css" rel="stylesheet">

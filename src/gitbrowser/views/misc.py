@@ -4,12 +4,14 @@ from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.http.response import Http404, HttpResponse
+from django.utils.decorators import method_decorator
 from django.utils.feedgenerator import Atom1Feed
 from django.utils.safestring import mark_safe
+from django.views.decorators.cache import cache_page
 from django.views.generic import View
 from gitbrowser.conf import config
 from gitbrowser.utils.linking import Autolinker
-
+import xml.etree.cElementTree as et
 
 class RepositorySitemap(Sitemap):
 
@@ -94,3 +96,35 @@ Sitemap: %s""" % request.build_absolute_uri(reverse('sitemap'))
 			content += "Disallow: /"
 
 		return HttpResponse(content, content_type='text/plain')
+
+
+class OPMLView(View):
+	@method_decorator(cache_page(15 * 60 * 60))
+	def dispatch(self, request, *args, **kwargs):
+		return super(OPMLView, self).dispatch(request, *args, **kwargs)
+
+	def get(self, request):
+
+		opml = et.Element("opml")
+		opml.attrib['version'] = '1.0'
+
+		head = et.SubElement(opml, 'head')
+		et.SubElement(head, 'title').text = 'Git Repositories'
+
+		body = et.SubElement(opml, 'body')
+		outline = et.SubElement(body, 'outline')
+		outline.attrib['text'] = 'RSS feeds'
+
+		for repository in config.lister.list(request.user, flat=True):
+			x = et.SubElement(outline, 'outline')
+			x.attrib['type'] = 'rss'
+			x.attrib['text'] = repository.name
+			x.attrib['title'] = repository.name
+			x.attrib['xmlUrl'] = request.build_absolute_uri(reverse('feed', args=(repository.relative_path, )))
+			x.attrib['htmlUrl'] = request.build_absolute_uri(reverse('overview', args=(repository.relative_path, )))
+
+		tree = et.ElementTree(opml)
+		response = HttpResponse(content_type='application/xml')
+		tree.write(response)
+		return response
+
