@@ -17,33 +17,49 @@
 		{% block styles %}{% endblock %}
 
 		<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}site.js"></script>
 		{% block scripts %}{% endblock %}
 	</head>
 	<body role="document">
 
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-  			<div class="container-fluid">
-				<div id="navbar">
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
 
-					<ul class="nav navbar-nav">
-						<li><a href="{% url 'list' %}" title="Projects">Projects</a></li>
-						{% if browse_path_items %}
-							<li class="navbar-text hidden-xs">/<li>
-						{% endif %}
-						{% for path, label in browse_path_items %}
-							<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
-							{% if not forloop.last %}
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+
+					{% if repository %}
+						<a class="navbar-brand" href="{% url 'overview' repository.relative_path %}">{{ repository.name }}</a>
+					{% endif %}
+				</div>
+
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<div id="navbar">
+						<ul class="nav navbar-nav">
+							<li><a href="{% url 'list' %}" title="Projects">Projects</a></li>
+							{% if browse_path_items %}
 								<li class="navbar-text hidden-xs">/<li>
 							{% endif %}
-						{% endfor %}
-					</ul>
-					<div class="navbar-right login-logout">
-						{% if user.is_authenticated %}
-							<a href="{% url 'logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
-						{% else %}
-							<a href="{% url 'login' %}" title="Login" class="btn btn-success navbar-btn" role="button">Login</a>
-						{% endif %}
+							{% for path, label in browse_path_items %}
+								<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
+								{% if not forloop.last %}
+									<li class="navbar-text hidden-xs">/<li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+						<div class="navbar-right login-logout">
+							{% if user.is_authenticated %}
+								<a href="{% url 'logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
+							{% else %}
+								<a href="{% url 'login' %}" title="Login" class="btn btn-success navbar-btn" role="button">Login</a>
+							{% endif %}
+						</div>
 					</div>
 				</div>
 			</div>
