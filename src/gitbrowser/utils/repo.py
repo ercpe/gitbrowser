@@ -164,6 +164,9 @@ class GitRepository(object):
 			self._commit_list = CommitListWrapper(self.repo, self.list_filter_ref, self.list_filter_path)
 		return self._commit_list
 
+	def get_tag(self, name):
+		return self.repo.tag('refs/tags/%s' % name)
+
 	@property
 	def tags(self):
 		return versorted(self.repo.tags, key=lambda x: x.name, reverse=True)

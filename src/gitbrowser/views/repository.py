@@ -125,6 +125,7 @@ class RepositoryArchiveView(RepositoryMixin, View):
 
 	def get(self, *args, **kwargs):
 		tag = kwargs.get('tag')
+		tag_obj = self.repository.get_tag(tag)
 		format = kwargs.get('format')
 
 		filename = '%s-%s.tar.%s' % (self.repository.clean_name, tag, format)
@@ -132,7 +133,10 @@ class RepositoryArchiveView(RepositoryMixin, View):
 		resp = HttpResponse(content_type='application/x-gtar')
 		resp['Content-Disposition'] = 'attachment; filename=%s' % filename
 
-		with GzipFile(filename=filename, fileobj=resp, mode='wb', compresslevel=5) as gz:
+		# it's important to set the mtime on the gzip file. Otherwise the current timestamp
+		# will be used by GzipFile which will break checksums
+		with GzipFile(filename=filename, fileobj=resp, mode='wb',
+						compresslevel=5, mtime=tag_obj.commit.committed_date) as gz:
 			self.repository.archive(gz, treeish=tag)
 
 		return resp
