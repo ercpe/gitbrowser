@@ -14,7 +14,7 @@
 				{% endbootstrap_tab %}
 
 				{% bootstrap_tab 'source' %}
-					<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
+					<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}"
 					   title="Browse source tree of {{repository.name}}"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Source</a>
 				{% endbootstrap_tab %}
 				{% bootstrap_tab 'commits' %}
