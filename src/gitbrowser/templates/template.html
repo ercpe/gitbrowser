@@ -10,6 +10,7 @@
 
 		{% block head %}{% endblock %}
 		<link rel="alternate" title="Git projects feeds" href="{% url 'opml' %}" type="text/x-opml" />
+		<link rel="alternate" title="Git projects list" href="{% url 'json' %}" type="application/json" />
 
 		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="{{STATIC_URL}}dashboard.css" rel="stylesheet">

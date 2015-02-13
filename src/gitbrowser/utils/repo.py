@@ -26,6 +26,13 @@ tag_commit_cache = gitbrowser_cache('tag-commit', 'tc')
 repo_commit_count_cache = gitbrowser_cache('repository-commit-count', 'count')
 
 
+README_CHOICES = [
+	('README.md', 'markdown',),
+	('README.rst', 'rest'),
+	('README', 'text'),
+	('README.txt', 'text'),
+]
+
 ###
 ### Monkey patching of git.objects.commit.Commit
 ###
@@ -202,15 +209,10 @@ class GitRepository(object):
 		if not config.feature_enabled('render_readme'):
 			return
 
-		for filename, renderer_name in [
-				('README.md', 'markdown',),
-				('README.rst', 'rest'),
-				('README', 'text'),
-				('README.txt', 'text'),
-			]:
+		for filename, renderer_name in README_CHOICES:
 			try:
 				items = list(self.items(filename))
-			except KeyError as ke:
+			except KeyError:
 				continue
 
 			if len(items or []) == 1 and isinstance(items[0], Blob):
@@ -222,6 +224,14 @@ class GitRepository(object):
 					logging.error("Could not render readme %s - %s" % (filename, ex))
 					logging.error(traceback.format_exc())
 
+	@property
+	def readme_item(self):
+		for filename, _ in README_CHOICES:
+			try:
+				list(self.items(filename))
+				return filename
+			except KeyError:
+				continue
 
 	def archive(self, stream, *args, **kwargs):
 		return self.repo.archive(stream, *args, **kwargs)

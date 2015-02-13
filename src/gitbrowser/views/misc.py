@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
@@ -128,3 +129,23 @@ class OPMLView(View):
 		tree.write(response)
 		return response
 
+
+class JSONView(View):
+
+	@method_decorator(cache_page(15 * 60 * 60))
+	def dispatch(self, request, *args, **kwargs):
+		return super(JSONView, self).dispatch(request, *args, **kwargs)
+
+	def get(self, request):
+		l = [{
+				'title': repo.relative_path,
+				'description': repo.description,
+				'html': request.build_absolute_uri(reverse('overview', args=(repo.relative_path, ))),
+				'code': repo.preferred_clone_url,
+				'feed': request.build_absolute_uri(reverse('feed', args=(repo.relative_path, ))),
+				'readme': request.build_absolute_uri(reverse('raw', args=(
+					repo.relative_path, repo.current_branch, repo.readme_item
+				))) if repo.readme_item else None
+			} for repo in config.lister.list(request.user, flat=True)
+		]
+		return HttpResponse(json.dumps(l), content_type='application/json')
