@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.views.generic.base import TemplateView, View, ContextMixin
 from gitbrowser.conf import config, LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL, LIST_STYLE_TREE
@@ -27,6 +28,9 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 			repositories = sorted(repositories, key=lambda x: x.path)
 
 		d['repositories'] = repositories
+		d['alternate_content_types'] = [
+			('application/json', self.request.build_absolute_uri(reverse('json')))
+		]
 		return d
 
 

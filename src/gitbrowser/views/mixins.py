@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from gitbrowser.conf import config
+from gitbrowser.utils.http import bestof
 from gitbrowser.utils.misc import generate_breadcrumb_path
 
 
@@ -48,3 +50,23 @@ class RepositoryMixin(BreadcrumbMixin):
 		ctx['current_tab'] = getattr(self, 'current_tab', None)
 		ctx['can_switch_branches'] = getattr(self, 'can_switch_branches', False)
 		return ctx
+
+
+class JSONContentNegotiationMixin(object):
+
+	def render_to_response(self, context, **response_kwargs):
+		best_content_type = bestof(self.request.META['HTTP_ACCEPT'], 'text/html', 'application/json')
+
+		if best_content_type == 'application/json':
+			return self.get_json_response(self.convert_context_to_json(context))
+		else:
+			context['alternate_content_types'] = [
+				('application/json', self.request.build_absolute_uri(self.request.get_full_path()))
+			]
+			return super(JSONContentNegotiationMixin, self).render_to_response(context, **response_kwargs)
+
+	def get_json_response(self, content, **httpresponse_kwargs):
+		return HttpResponse(content, content_type='application/json', **httpresponse_kwargs)
+
+	def convert_context_to_json(self, context):
+		return json.dumps(context)

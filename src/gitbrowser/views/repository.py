@@ -3,6 +3,7 @@ from gzip import GzipFile
 import json
 import logging
 import urllib
+from django.core.urlresolvers import reverse
 from django.utils.http import http_date
 from django.core.paginator import PageNotAnInteger, Paginator
 from django.core.paginator import EmptyPage
@@ -13,7 +14,7 @@ from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
 from gitbrowser.conf import config, COMMIT_LIST_DEFAULT
 from gitbrowser.templatetags.gb_tags import time_tag
-from gitbrowser.views.mixins import RepositoryMixin
+from gitbrowser.views.mixins import RepositoryMixin, JSONContentNegotiationMixin
 
 
 class BrowseTreeView(RepositoryMixin, TemplateView):
@@ -116,9 +117,27 @@ class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 		return d
 
 
-class RepositoryTagsView(RepositoryMixin, TemplateView):
+class RepositoryTagsView(JSONContentNegotiationMixin, RepositoryMixin, TemplateView):
 	template_name = 'repository/tags.html'
 	current_tab = 'tags'
+
+	def convert_context_to_json(self, context):
+		def _aa():
+			for x in self.repository.tags:
+				try:
+					yield {
+						'name': x.name,
+						'archive': self.request.build_absolute_uri(reverse('archive', args=(
+							self.repository.relative_path,
+							x.name,
+							'gz'
+						))),
+						'timestamp': x.commit.committed_date,
+						'description': x.commit.summary
+					}
+				except Exception as ex:
+					logging.exception("Failed to convert %s" % x)
+		return json.dumps(list(_aa()))
 
 
 class RepositoryArchiveView(RepositoryMixin, View):

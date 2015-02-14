@@ -145,7 +145,8 @@ class JSONView(View):
 				'feed': request.build_absolute_uri(reverse('feed', args=(repo.relative_path, ))),
 				'readme': request.build_absolute_uri(reverse('raw', args=(
 					repo.relative_path, repo.current_branch, repo.readme_item
-				))) if repo.readme_item else None
+				))) if repo.readme_item else None,
+				'tags': request.build_absolute_uri(reverse('tags', args=(repo.relative_path, ))) if repo.tags else None
 			} for repo in config.lister.list(request.user, flat=True)
 		]
 		return HttpResponse(json.dumps(l), content_type='application/json')
