@@ -88,7 +88,7 @@ class CommitDetailView(RepositoryMixin, DetailView):
 		return self.repository.get_commit(self.kwargs['commit_id'])
 
 
-class RepositoryCommitsListView(RepositoryMixin, TemplateView):
+class RepositoryCommitsListView(JSONContentNegotiationMixin, RepositoryMixin, TemplateView):
 	current_tab = 'commits'
 	can_switch_branches = True
 
@@ -115,6 +115,25 @@ class RepositoryCommitsListView(RepositoryMixin, TemplateView):
 		d['paginator'] = paginator
 		d['commits'] = commits
 		return d
+
+	def convert_context_to_json(self, context):
+		def _aa():
+			for commit in context['commits']:
+				try:
+					yield {
+						'summary': commit.summary,
+						'link': self.request.build_absolute_uri(reverse('commit', args=(
+							self.repository.relative_path,
+							commit.hexsha
+						))),
+						'id': commit.hexsha,
+						'timestamp': commit.committed_date,
+						'committer_name': commit.committer.name,
+						'committer_email': commit.committer.email
+					}
+				except Exception as ex:
+					logging.exception("Failed to convert %s" % commit)
+		return json.dumps(list(_aa()))
 
 
 class RepositoryTagsView(JSONContentNegotiationMixin, RepositoryMixin, TemplateView):
