@@ -101,6 +101,15 @@ class GitbrowserConf(object):
 	def allow_anonymous(self):
 		return self.get('allow_anonymous', True)
 
+	@property
+	def extra_scripts(self):
+		x = self.gbconf.get('display', {}).get('extra_scripts', [])
+
+		if not isinstance(x, (list, tuple)):
+			x = (x, )
+
+		return x
+
 	def feature_enabled(self, feature_name):
 		features = FEATURE_DEFAULTS
 		features.update(self.gbconf.get('features', {}))

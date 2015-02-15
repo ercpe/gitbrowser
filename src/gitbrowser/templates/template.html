@@ -23,6 +23,9 @@
 		<script type="text/javascript" src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}site.js"></script>
 		{% block scripts %}{% endblock %}
+		{% for script in extra_scripts %}
+			<script type="text/javascript" src="{{script}}"></script>
+		{% endfor %}
 	</head>
 	<body role="document">
 

@@ -7,7 +7,17 @@ from gitbrowser.utils.http import bestof
 from gitbrowser.utils.misc import generate_breadcrumb_path
 
 
-class BreadcrumbMixin(object):
+class GitbrowserMixin(object):
+
+	def get_context_data(self, **kwargs):
+		ctx = super(GitbrowserMixin, self).get_context_data(**kwargs)
+
+		ctx['extra_scripts'] = config.extra_scripts
+
+		return ctx
+
+
+class BreadcrumbMixin(GitbrowserMixin):
 
 	def get_context_data(self, **kwargs):
 		ctx = super(BreadcrumbMixin, self).get_context_data(**kwargs)
