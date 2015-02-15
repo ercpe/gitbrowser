@@ -175,6 +175,6 @@ class RepositoryArchiveView(RepositoryMixin, View):
 		# will be used by GzipFile which will break checksums
 		with GzipFile(filename=filename, fileobj=resp, mode='wb',
 						compresslevel=5, mtime=tag_obj.commit.committed_date) as gz:
-			self.repository.archive(gz, treeish=tag)
+			self.repository.archive(gz, treeish=tag, prefix="%s-%s/" % (self.repository.clean_name, tag))
 
 		return resp
