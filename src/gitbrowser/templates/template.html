@@ -38,7 +38,7 @@
 					</button>
 
 					{% if repository %}
-						<a class="navbar-brand" href="{% url 'overview' repository.relative_path %}">{{ repository.name }}</a>
+						<a class="navbar-brand hidden-md hidden-lg" href="{% url 'overview' repository.relative_path %}">{{ repository.name }}</a>
 					{% endif %}
 				</div>
 
