@@ -1,0 +1,6 @@
+<pre>{{commit.message}}</pre>
+
+{% for change in commit.changes %}
+	<h3>{{change.a_blob.path}}</h3>
+	<pre>{{change.diff}}</pre>
+{% endfor %}

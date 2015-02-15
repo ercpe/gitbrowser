@@ -5,11 +5,13 @@ from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.http.response import Http404, HttpResponse
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.feedgenerator import Atom1Feed
 from django.utils.safestring import mark_safe
 from django.views.decorators.cache import cache_page
 from django.views.generic import View
+from pygments.formatters.html import HtmlFormatter
 from gitbrowser.conf import config
 from gitbrowser.utils.linking import Autolinker
 import xml.etree.cElementTree as et
@@ -81,7 +83,10 @@ class CommitsFeed(GitbrowserFeed):
 		return item.committed_datetime()
 
 	def item_description(self, item):
-		return mark_safe(Autolinker().link(item.message, self._obj))
+		return render_to_string('feeds/commit.html', {
+			'styles': HtmlFormatter().get_style_defs('.highlight'),
+			'commit': item
+		})
 
 
 class RobotsTxtView(View):

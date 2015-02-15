@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import hashlib
-from django.http.response import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.generic.base import View
