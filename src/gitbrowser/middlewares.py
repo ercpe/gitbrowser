@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
 import logging
 import re
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect, Http404
+from django.http.response import HttpResponseRedirect, Http404, HttpResponsePermanentRedirect
 from gitbrowser.conf import config
 
 
@@ -42,7 +41,7 @@ class InterceptGitwebMiddleware(object):
 
 		if redirect_url:
 			logging.info("Intercepted gitweb url. Redirecting to %s" % redirect_url)
-			return HttpResponseRedirect(redirect_url)
+			return HttpResponsePermanentRedirect(redirect_url)
 
 		logging.warning("Could not find a redirect url for p=%s and a=%s" % (project, action))
 		raise Http404
