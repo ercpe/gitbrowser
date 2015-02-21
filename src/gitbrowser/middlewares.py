@@ -4,7 +4,7 @@ import logging
 import re
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, Http404
 from gitbrowser.conf import config
 
 
@@ -45,6 +45,7 @@ class InterceptGitwebMiddleware(object):
 			return HttpResponseRedirect(redirect_url)
 
 		logging.warning("Could not find a redirect url for p=%s and a=%s" % (project, action))
+		raise Http404
 
 
 class LoginRequiredMiddleware(object):
