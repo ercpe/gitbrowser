@@ -4,7 +4,11 @@
 {% load bootstrap3 %}
 {% load profiling %}
 
-{% block title %}Commits in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+{% block title %}{% if repo_path %}
+History of {{repo_path}}
+{% else %}
+Commits
+{% endif %} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block repository_content %}
 

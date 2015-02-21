@@ -295,17 +295,20 @@ class CommitListWrapper(object):
 		return self._iter_slice
 
 	def __len__(self):
-		try:
-			head = self.repo.head.commit.hexsha
-		except ValueError:
-			return 0
-		commit_count = repo_commit_count_cache.get(head)
-		if commit_count:
-			return commit_count
+		if self.filter_path:
+			return long(self.repo.git.rev_list('--count', 'HEAD', '--', self.filter_path))
 		else:
-			commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
-			repo_commit_count_cache.set(head, commit_count)
-			return commit_count
+			try:
+				head = self.repo.head.commit.hexsha
+			except ValueError:
+				return 0
+			commit_count = repo_commit_count_cache.get(head)
+			if commit_count:
+				return commit_count
+			else:
+				commit_count = long(self.repo.git.rev_list(self.repo.head.commit, '--count'))
+				repo_commit_count_cache.set(head, commit_count)
+				return commit_count
 
 	def __nonzero__(self):
 		return self.__bool__()

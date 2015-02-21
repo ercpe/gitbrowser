@@ -17,6 +17,8 @@
 			{% author_tag blob.latest_commit.author %}, {% time_tag blob.latest_commit.authored_datetime %}:
 
 			<a itemprop="url" href="{% url 'commit' repository.relative_path blob.latest_commit.hexsha %}" title="{{blob.latest_commit.summary}}">{{blob.latest_commit.summary|truncatewords:20}}</a>
+
+			<span class="pull-right"><a href="{% url 'history' repository.relative_path repository.list_filter_ref blob.path %}">History</a></span>
 		</p>
 
 		{% if blob.can_display %}
