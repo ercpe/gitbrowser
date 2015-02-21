@@ -28,7 +28,7 @@ class InterceptGitwebMiddleware(object):
 		redirect_url = None
 
 		if action == "summary":
-			redirect_url = reverse('browse', args=(project, ))
+			redirect_url = reverse('overview', args=(project, ))
 		elif action == 'tree':
 			redirect_url = reverse('browse_ref', args=(project, head_base, file_or_folder))
 		elif action == 'blob':
