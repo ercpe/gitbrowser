@@ -40,6 +40,8 @@ class InterceptGitwebMiddleware(object):
 			redirect_url = reverse('raw', args=(project, head_base, file_or_folder))
 		elif action == "history":
 			redirect_url = reverse('history', args=(project, head_base, file_or_folder))
+		elif action == "atom" or action == "rss":
+			redirect_url = reverse('feed', args=(project, ))
 
 		if redirect_url:
 			logging.info("Intercepted gitweb url. Redirecting to %s" % redirect_url)
