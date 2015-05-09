@@ -7,31 +7,41 @@
 {% block body_content %}
 	<div class="container">
 		<div class="wrapper table-responsive">
-			<table class="table table-condensed">
-				{% for repo in repositories %}
-
-					<tr>
-						<td>
-							{% if repo.repo %}
-								{% bootstrap_icon "list-alt" %}
-								<a href="{% url 'overview' repo.relative_path %}" title="{{repo.description|default:repo.name}}">{{repo.name}}</a>
-							{% else %}
-								{% bootstrap_icon "tasks" %}
-								<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
-							{% endif %}
-						</td>
-						<td class="text-muted">{{repo.description}}</td>
-						<td>{% if repo.preferred_clone_url %}<a href="{{repo.preferred_clone_url}}" title="Clone URL">{{repo.preferred_clone_url}}</a>{% endif %}</td>
-					</tr>
-
-				{% empty %}
-					<tr>
-						<td>
-							<p>No repositories found.</p>
-						</td>
-					</tr>
-				{% endfor %}
-			</table>
+			<div itemscope itemtype="http://schema.org/Table">
+				<h2 itemprop="about">Repositories</h2>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Repository</th>
+							<th>Description</th>
+							<th>Clone URL</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for repo in repositories %}
+							<tr>
+								<td>
+									{% if repo.repo %}
+										{% bootstrap_icon "list-alt" %}
+										<a href="{% url 'overview' repo.relative_path %}" title="{{repo.description|default:repo.name}}">{{repo.name}}</a>
+									{% else %}
+										{% bootstrap_icon "tasks" %}
+										<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
+									{% endif %}
+								</td>
+								<td class="text-muted">{{repo.description}}</td>
+								<td>{% if repo.preferred_clone_url %}<a href="{{repo.preferred_clone_url}}" title="Clone URL">{{repo.preferred_clone_url}}</a>{% endif %}</td>
+							</tr>
+						{% empty %}
+							<tr>
+								<td>
+									<p>No repositories found.</p>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 {% endblock %}
