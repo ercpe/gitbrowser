@@ -36,7 +36,10 @@
 				</div>
 			</div>
 		{% else %}
-			<p>Too bad, the repository doesn't have a Readme file :(</p>
+			<div class="alert alert-info" role="alert">
+				<p><strong>Did you know?</strong> Gitbrowser will render the content of README files in the root of the
+				repository here.<br />Supported formats: Markdown (README.md), ReStructured Text (README.rst) and Plain text (README.txt or README).</p>
+			</div>
 		{% endif %}
 	</div>
 {% endblock %}
