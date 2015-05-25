@@ -246,6 +246,7 @@ class GitRepository(object):
 
 	def items(self, filter_path=None):
 		try:
+			logging.info("Applying filter_ref %s" % self.list_filter_ref)
 			tree = self.repo.tree(self.list_filter_ref)
 		except (BadObject, BadName) as bo:
 			logging.warning("Got %s - is the repository empty?" % bo)

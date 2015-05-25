@@ -8,12 +8,10 @@ from django.http.response import Http404, HttpResponse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.feedgenerator import Atom1Feed
-from django.utils.safestring import mark_safe
 from django.views.decorators.cache import cache_page
 from django.views.generic import View
 from pygments.formatters.html import HtmlFormatter
 from gitbrowser.conf import config
-from gitbrowser.utils.linking import Autolinker
 import xml.etree.cElementTree as et
 
 class RepositorySitemap(Sitemap):
