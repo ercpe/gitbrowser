@@ -12,6 +12,7 @@ from gitdb.exc import BadObject, BadName
 from natsort import versorted
 from gitbrowser.conf import config
 from gitbrowser.utils.cache import gitbrowser_cache
+from gitbrowser.utils.deps import PythonRequirements
 from gitbrowser.utils.misc import generate_breadcrumb_path
 from gitbrowser.utils.rendering import get_renderer_by_name
 
@@ -32,6 +33,10 @@ README_CHOICES = [
 	('README', 'text'),
 	('README.txt', 'text'),
 ]
+
+DEPENDENCY_CHOICES = (
+	('requirements.txt', PythonRequirements),
+)
 
 ###
 ### Monkey patching of git.objects.commit.Commit
@@ -223,6 +228,26 @@ class GitRepository(object):
 				except Exception as ex:
 					logging.error("Could not render readme %s - %s" % (filename, ex))
 					logging.error(traceback.format_exc())
+
+	@property
+	def has_dependencies(self):
+		for filename, _ in DEPENDENCY_CHOICES:
+			try:
+				list(self.items(filename))
+				return True
+			except KeyError:
+				pass
+
+	@property
+	def dependencies(self):
+		for filename, clazz in DEPENDENCY_CHOICES:
+			try:
+				dependency_files = list(self.items(filename))
+
+				if dependency_files:
+					return clazz().parse(dependency_files[0].content())
+			except KeyError:
+				pass
 
 	@property
 	def readme_item(self):

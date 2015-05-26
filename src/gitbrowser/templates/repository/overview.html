@@ -28,18 +28,34 @@
 			</tr>
 		</table>
 
-		{% if repository.readme %}
-			<div class="panel panel-default readme-panel">
-				<div class="panel-heading"><h4 class="panel-title" id="readme">{% bootstrap_icon "list-alt" %} Readme</h4></div>
-				<div class="panel-body">
-					{{repository.readme|safe}}
+		<div class="row">
+			<div class="{% if repository.has_dependencies %}col-md-9{% else %}col-md-12{% endif %}">
+				{% if repository.readme %}
+					<div class="panel panel-default readme-panel">
+						<div class="panel-heading"><h4 class="panel-title" id="readme">{% bootstrap_icon "list-alt" %} Readme</h4></div>
+						<div class="panel-body">
+							{{repository.readme|safe}}
+						</div>
+					</div>
+				{% else %}
+					<div class="alert alert-info" role="alert">
+						<p><strong>Did you know?</strong> Gitbrowser will render the content of README files in the root of the
+						repository here.<br />Supported formats: Markdown (README.md), ReStructured Text (README.rst) and Plain text (README.txt or README).</p>
+					</div>
+				{% endif %}
+			</div>
+			{% if repository.has_dependencies %}
+				<div class="col-md-3">
+					<div class="panel panel-default readme-panel">
+						<div class="panel-heading"><h4 class="panel-title" id="dependencies">{% bootstrap_icon "list-alt" %} Dependencies</h4></div>
+						<div class="panel-body">
+							{% for dep in repository.dependencies %}
+								<p><a href="{{dep.url}}" title="{{dep}}">{{dep}}</a></p>
+							{% endfor %}
+						</div>
+					</div>
 				</div>
-			</div>
-		{% else %}
-			<div class="alert alert-info" role="alert">
-				<p><strong>Did you know?</strong> Gitbrowser will render the content of README files in the root of the
-				repository here.<br />Supported formats: Markdown (README.md), ReStructured Text (README.rst) and Plain text (README.txt or README).</p>
-			</div>
-		{% endif %}
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}
