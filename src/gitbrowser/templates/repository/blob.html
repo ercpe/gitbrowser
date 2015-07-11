@@ -7,7 +7,7 @@
 <link href="{% url 'styles' %}" rel="stylesheet">
 {% endblock %}
 
-{% block title %}{{blob.path}} in {{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+{% block title %}{{repository.name}}/{% if repository.path %}{{repository.path}}/{% endif %}{{blob.path}} {% endblock %}
 
 {% block repository_browse_content %}
 	<div itemscope itemtype="http://schema.org/Code">

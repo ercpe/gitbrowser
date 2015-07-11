@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load bootstrap3 %}
 
-{% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+{% block title %}{{repository.name}}/{% if repository.list_filter_path %}{{repository.list_filter_path}}{% endif %}{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
