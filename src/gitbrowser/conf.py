@@ -110,6 +110,10 @@ class GitbrowserConf(object):
 
 		return x
 
+	@property
+	def extra_html(self):
+		return self.gbconf.get('display', {}).get('extra_html', "")
+
 	def feature_enabled(self, feature_name):
 		features = FEATURE_DEFAULTS
 		features.update(self.gbconf.get('features', {}))

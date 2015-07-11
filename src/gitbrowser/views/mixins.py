@@ -13,6 +13,7 @@ class GitbrowserMixin(object):
 		ctx = super(GitbrowserMixin, self).get_context_data(**kwargs)
 
 		ctx['extra_scripts'] = config.extra_scripts
+		ctx['extra_html'] = config.extra_html
 
 		return ctx
 
