@@ -69,13 +69,33 @@ class ContentSecurityPolicyMiddleware(object):
 
 	def process_response(self, request, response):
 		my_url = request.build_absolute_uri('/')
-		l = [
-			('script-src', my_url),
-			('img-src', "'self' data: %s *.gravatar.com *" % my_url),
-			('style-src', "'self' 'unsafe-inline' %s" % my_url),
-			('connect-src', my_url),
-			('font-src', my_url),
-		]
 
-		response['Content-Security-Policy'] = '; '.join(["%s %s" % x for x in l])
+		csp_urls = {
+			'script-src': [my_url],
+			'img-src': ["'self'", 'data:', my_url, "*.gravatar.com", "*"],
+			'style-src': ['self', "'unsafe-inline'", my_url],
+			'connect-src': [my_url],
+			'font-src': [my_url],
+		}
+
+		conf_urls = getattr(settings, 'CONTENT_SECURITY_POLICY_URLS', None)
+
+		if conf_urls:
+			if isinstance(conf_urls, (list, tuple)):
+				# one iterable of strings: add them to each key
+				for k in csp_urls.keys():
+					csp_urls[k].extend(conf_urls)
+			elif isinstance(conf_urls, dict):
+				# merge dicts
+				for conf_k in conf_urls.keys():
+					if conf_k not in csp_urls:
+						continue
+					urls = conf_urls[conf_k] if isinstance(conf_urls[conf_k], (list, tuple)) else [conf_urls[conf_k]]
+					csp_urls[conf_k].extend(urls)
+			else:
+				# consider it a string
+				for k in csp_urls.keys():
+					csp_urls[k].append(conf_urls)
+
+		response['Content-Security-Policy'] = '; '.join(["%s %s" % (k, ' '.join(v)) for k, v in csp_urls.items()])
 		return response

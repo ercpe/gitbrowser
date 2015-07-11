@@ -96,3 +96,7 @@ LOGOUT_URL = LOGIN_REDIRECT_URL
 LOGIN_EXEMPT_URLS = [
 	'^robots\.txt$',
 ]
+
+# A single string or a list of string will appended to all CSPs
+# A dictionary will be merged with the default CSPs
+CONTENT_SECURITY_POLICY_URLS = None
