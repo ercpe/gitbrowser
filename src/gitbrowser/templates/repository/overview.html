@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load bootstrap3 %}
 
-{% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} in {% endif %}{{repository.name}}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
+{% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} / {% endif %}{{repository.name}}{% if repository.description %} - {{repository.description}}{% endif %}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block head %}
 <link rel="alternate" type="application/atom+xml" title="Commits on {{repository.name}}" href="{% url 'feed' repository.relative_path %}" />
