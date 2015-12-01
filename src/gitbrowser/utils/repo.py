@@ -10,6 +10,8 @@ from git.objects.blob import Blob
 from git.objects.commit import Commit
 from gitdb.exc import BadObject, BadName
 from natsort import versorted
+from pkg_resources import RequirementParseError
+
 from gitbrowser.conf import config
 from gitbrowser.utils.cache import gitbrowser_cache
 from gitbrowser.utils.deps import PythonRequirements
@@ -245,7 +247,10 @@ class GitRepository(object):
 				dependency_files = list(self.items(filename))
 
 				if dependency_files:
-					return clazz().parse(dependency_files[0].content())
+					try:
+						return clazz().parse(dependency_files[0].content())
+					except RequirementParseError:
+						logging.exception("Error parsing %s" % dependency_files)
 			except KeyError:
 				pass
 
