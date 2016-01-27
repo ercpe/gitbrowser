@@ -3,11 +3,11 @@ import re
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html, escape
 from gitdb.exc import BadName
-
+from six import u
 
 class Autolinker(object):
 	# http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-	GRUBER_URLINTEXT_PAT = re.compile(ur"""(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?Â«Â»â€œâ€â€˜â€™]))""")
+	GRUBER_URLINTEXT_PAT = re.compile(u(r"""(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?Â«Â»â€œâ€â€˜â€™]))"""))
 
 	def link(self, raw_text, repository):
 		message = escape(raw_text)

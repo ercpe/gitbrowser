@@ -55,12 +55,11 @@ class DataDumperReader(object):
 		Primitives are returned directly, for lists and dicts :func:`parse_dict` or :func:`parse_list`
 		are called
 		"""
-
-		token = lexer.next()
+		token = lexer.get_token()
 
 		if token == '%':
-			variable_name = lexer.next()
-			nt = lexer.next()
+			variable_name = lexer.get_token()
+			nt = lexer.get_token()
 			assert nt == "=", "Expected equal sign; got %s" % nt
 			return self.unquote(variable_name), self.parse_dict(lexer)
 
@@ -73,10 +72,10 @@ class DataDumperReader(object):
 			return self.parse_list(lexer)
 
 		if token == '$':
-			variable_name = lexer.next()
-			nt = lexer.next()
+			variable_name = lexer.get_token()
+			nt = lexer.get_token()
 			assert nt == "=", "Expected equal sign; got %s" % nt
-			return variable_name, lexer.next()
+			return variable_name, lexer.get_token()
 
 		return self.unquote(token)
 
@@ -84,7 +83,7 @@ class DataDumperReader(object):
 		"""Parses the current structure block into a python dict. Calls :func:`parse_structure` for each
 		value in the dictionary"""
 
-		token = lexer.next()
+		token = lexer.get_token()
 		assert token in ('(', '{'), "Expected '(' or '{'; got %s" % token
 
 		d = {}
@@ -96,7 +95,7 @@ class DataDumperReader(object):
 				continue
 
 			variable_name = token
-			nt = lexer.next() + lexer.next()
+			nt = lexer.get_token() + lexer.get_token()
 			assert nt == "=>", "Expected '=>'; got %s" % nt
 			d[self.unquote(variable_name)] = self.parse_structure(lexer)
 
@@ -106,7 +105,7 @@ class DataDumperReader(object):
 		"""Parses the current structure block into a python list. Calls :func:`parse_structure` for each
 		value."""
 
-		token = lexer.next()
+		token = lexer.get_token()
 		assert token == '[', "Expected '['; got %s" % token
 
 		l = []
@@ -121,7 +120,7 @@ class DataDumperReader(object):
 			list_item = self.parse_structure(lexer)
 			l.append(list_item)
 
-			nt = lexer.next()
+			nt = lexer.get_token()
 			if nt == ']':
 				break
 			assert nt == ",", "Expected ','; got %s" % nt

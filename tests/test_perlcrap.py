@@ -19,7 +19,7 @@ class PerlCrapTestCase(SimpleTestCase):
 		d = self.parse_and_assert(s, reader)
 
 		self.assertEqual(len(d), 1)
-		self.assertEqual(d.keys()[0], hash_name)
+		self.assertEqual(list(d)[0], hash_name)
 
 		obj = d[hash_name]
 		if assert_isinstance:
@@ -32,7 +32,7 @@ class PerlCrapTestCase(SimpleTestCase):
 
 		d = self.parse_and_assert(s)
 		self.assertEqual(len(d), 1)
-		self.assertEqual(d.keys()[0], 'foobar')
+		self.assertEqual(list(d)[0], 'foobar')
 		self.assertEqual(d['foobar'], '1')
 
 	def test_escaped_quotes(self):
@@ -40,7 +40,7 @@ class PerlCrapTestCase(SimpleTestCase):
 
 		d = self.parse_and_assert(s)
 		self.assertEqual(len(d), 1)
-		self.assertEqual(d.keys()[0], 'foobar')
+		self.assertEqual(list(d)[0], 'foobar')
 		self.assertEqual(d['foobar'], "foo's bar")
 
 	def test_invalid_input(self):
@@ -69,7 +69,7 @@ class PerlCrapTestCase(SimpleTestCase):
 		d = self.parse_and_assert_hash(s, assert_isinstance=dict)
 
 		self.assertEqual(len(d), 1)
-		self.assertEqual(d.keys()[0], 'foobar')
+		self.assertEqual(list(d)[0], 'foobar')
 
 		l = d['foobar']
 		self.assertTrue(isinstance(l, list))
@@ -84,7 +84,7 @@ class PerlCrapTestCase(SimpleTestCase):
 		d = self.parse_and_assert_hash(s, assert_isinstance=dict)
 
 		self.assertEqual(len(d), 1)
-		self.assertEqual(d.keys()[0], 'foobar')
+		self.assertEqual(list(d)[0], 'foobar')
 
 		l = d['foobar']
 		self.assertTrue(isinstance(l, list))
