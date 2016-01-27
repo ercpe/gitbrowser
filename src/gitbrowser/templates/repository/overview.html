@@ -6,12 +6,12 @@
 {% block title %}{% if repository.list_filter_path %}{{repository.list_filter_path}} / {% endif %}{{repository.name}}{% if repository.description %} - {{repository.description}}{% endif %}{% if repository.path %} :: {{repository.path}}{% endif %}{% endblock %}
 
 {% block head %}
-<link rel="alternate" type="application/atom+xml" title="Commits on {{repository.name}}" href="{% url 'feed' repository.relative_path %}" />
+<link rel="alternate" type="application/atom+xml" title="Commits on {{repository.name}}" href="{% url 'gitbrowser:feed' repository.relative_path %}" />
 {% endblock %}
 
 {% block repository_content %}
 	<div itemscope itemtype="http://schema.org/SoftwareApplication">
-		<meta itemprop="url" content="{% url 'overview' repository.relative_path %}" />
+		<meta itemprop="url" content="{% url 'gitbrowser:overview' repository.relative_path %}" />
 		{% if repository.tags %}
 			<meta itemprop="softwareVersion" content="{{repository.tags.0}}" />
 		{% endif %}

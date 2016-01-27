@@ -22,12 +22,12 @@
 				<tr itemscope itemtype="http://schema.org/CreativeWork" class="commit-row">
 					<td class="commit-author">{% author_tag commit.author %}</td>
 					<td>
-						<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
+						<a href="{% url 'gitbrowser:commit' repository.relative_path commit.hexsha %}"
 						   itemprop="url"
 						   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
 
 						{% if commit.tag %}
-							<span class="label label-warning tag-label"><a href="{% url 'tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
+							<span class="label label-warning tag-label"><a href="{% url 'gitbrowser:tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
 						{% endif %}
 					</td>
 					<td class="commit-time">

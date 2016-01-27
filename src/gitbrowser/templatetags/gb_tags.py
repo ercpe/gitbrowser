@@ -35,7 +35,7 @@ def author_tag(author, with_avatar=True, avatar_size=16, itemprop=['author']):
 	avatar_code = ""
 	if with_avatar:
 		avatar_code = '<img src="%(url)s?email=%(email)s&size=%(avatar_size)s" itemprop="image" title="%(author)s" class="avatar-small" />' % {
-			'url': reverse('avatar'),
+			'url': reverse('gitbrowser:avatar'),
 			'email': author.email,
 			'avatar_size': avatar_size,
 			'author': author

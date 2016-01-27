@@ -4,7 +4,7 @@
 {% load highlight %}
 
 {% block styles %}
-<link href="{% url 'styles' %}" rel="stylesheet">
+<link href="{% url 'gitbrowser:styles' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}{{repository.name}}/Commits/{{commit.summary}}{% endblock %}
@@ -16,7 +16,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					<span itemprop="headline">{{commit.summary}}</span>
-					<span class="pull-right"><a href="{% url 'commit' repository.relative_path commit.hexsha %}" title="Permalink" itemprop="url">{{commit.shorthexsha}}</a></span>
+					<span class="pull-right"><a href="{% url 'gitbrowser:commit' repository.relative_path commit.hexsha %}" title="Permalink" itemprop="url">{{commit.shorthexsha}}</a></span>
 				</h3>
 			</div>
 			<div class="panel-body">
@@ -29,10 +29,10 @@
 				{% endif %}
 			</div>
 			<div class="panel-footer">
-				{% author_tag commit.author %}, {% time_tag commit.authored_datetime itemprop="dateCreated" %}
+				{% autoescape off %}{% author_tag commit.author %}, {% time_tag commit.authored_datetime itemprop="dateCreated" %}{% endautoescape %}
 				<span class="pull-right text-muted">Parents:
 					{% for parent in commit.parents %}
-						<a class="text-muted" itemprop="isBasedOnUrl" href="{% url 'commit' repository.relative_path parent.hexsha %}" title="{{parent.hexsha}}" itemprop="url">{{parent.shorthexsha}}</a>{% if not forloop.last %}, {% endif %}
+						<a class="text-muted" itemprop="isBasedOnUrl" href="{% url 'gitbrowser:commit' repository.relative_path parent.hexsha %}" title="{{parent.hexsha}}" itemprop="url">{{parent.shorthexsha}}</a>{% if not forloop.last %}, {% endif %}
 					{% endfor %}
 				</span>
 			</div>
@@ -47,7 +47,7 @@
 				{{change.a_blob.path}}
 			</div>
 			<div class="panel-body">
-				{% highlight change.diff "text/x-patch" %}
+				{% autoescape off %}{% highlight change.diff "text/x-patch" %}{% endautoescape %}
 			</div>
 		</div>
 	{% endfor %}

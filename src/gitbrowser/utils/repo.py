@@ -74,8 +74,9 @@ def tag_for_commit(self):
 		tags = dict([(x.commit.hexsha, x.path) for x in self.repo.tags])
 		tag_commit_cache.set(self.repo.head.commit.hexsha, tags)
 
-	if self.hexsha in tags:
-		return self.repo.tag(tags[self.hexsha])
+	for _t in self.repo.tags:
+		if self.hexsha == _t.commit:
+			return self.repo.tag(tags[self.hexsha])
 
 Commit.tag = tag_for_commit
 

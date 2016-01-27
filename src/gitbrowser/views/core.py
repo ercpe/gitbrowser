@@ -29,7 +29,7 @@ class ListRepositoriesView(BreadcrumbMixin, TemplateView):
 
 		d['repositories'] = repositories
 		d['alternate_content_types'] = [
-			('application/json', self.request.build_absolute_uri(reverse('json')))
+			('application/json', self.request.build_absolute_uri(reverse('gitbrowser:json')))
 		]
 		return d
 

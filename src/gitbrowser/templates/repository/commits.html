@@ -17,21 +17,21 @@
 				<li class="media" itemscope itemtype="http://schema.org/CreativeWork">
 					<div class="media-left">
 						<img class="media-object img-rounded"
-							 src="{% url 'avatar' %}?email={{commit.committer.email}}&size=40"
+							 src="{% url 'gitbrowser:avatar' %}?email={{commit.committer.email}}&size=40"
 							 alt="{{commit.committer.name}}" title="{{commit.committer.name}}">
 					</div>
 					<div class="media-body">
 						<h4 class="media-heading">
-							<a href="{% url 'commit' repository.relative_path commit.hexsha %}"
+							<a href="{% url 'gitbrowser:commit' repository.relative_path commit.hexsha %}"
 							   itemprop="url"
 							   title="{{commit.summary}}"><span itemprop="headline">{{commit.summary|default:"(no message)"}}</span></a>
 
 							{% if commit.tag %}
-								<span class="label label-warning tag-label"><a href="{% url 'tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
+								<span class="label label-warning tag-label"><a href="{% url 'gitbrowser:tags' repository.relative_path %}#{{commit.tag}}">{{commit.tag}}</a></span>
 							{% endif %}
 						</h4>
 						<p class="text-muted">
-							{% author_tag commit.author with_avatar=False %}, {% time_tag commit.committed_datetime itemprop="dateCreated" %}
+							{% autoescape off %}{% author_tag commit.author with_avatar=False %}, {% time_tag commit.committed_datetime itemprop="dateCreated" %}{% endautoescape %}
 						</p>
 					</div>
 				</li>

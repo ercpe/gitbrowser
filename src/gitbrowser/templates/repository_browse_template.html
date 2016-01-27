@@ -3,7 +3,7 @@
 {% block repository_content %}
 	<ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
 		<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-			<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}"
+			<a href="{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref '' %}"
 			   title="Browse repository root"
 			   itemprop="item"><span itemprop="name">{{repository.name}}</span></a>
 		</li>
@@ -12,7 +12,7 @@
 				<li class="active">{{label}}</li>
 			{% else %}
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-					<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref path %}"
+					<a href="{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref path %}"
 						title="Browse {{path}}"
 						itemprop="item"><span itemprop="name">{{label}}</span></a>
 					<meta itemprop="position" content="{{forloop.counter}}" />

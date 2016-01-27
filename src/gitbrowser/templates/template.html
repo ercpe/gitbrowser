@@ -1,4 +1,6 @@
-{% load bootstrap3 %}<!DOCTYPE html>
+{% load staticfiles %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -9,19 +11,19 @@
 		{% block robots %}<meta name="robots" content="index,follow,noarchive" />{% endblock %}
 
 		{% block head %}{% endblock %}
-		<link rel="alternate" title="Git projects feeds" href="{% url 'opml' %}" type="text/x-opml" />
+		<link rel="alternate" title="Git projects feeds" href="{% url 'gitbrowser:opml' %}" type="text/x-opml" />
 		{% for ct, url in alternate_content_types %}
 			<link rel="alternate" href="{{url}}" type="{{ct}}" />
 		{% endfor %}
 
-		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css" rel="stylesheet">
-		<link href="{{STATIC_URL}}dashboard.css" rel="stylesheet">
-		<link href="{{STATIC_URL}}site.css" rel="stylesheet">
+		<link href="{% static 'gitbrowser/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'gitbrowser/dashboard.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'gitbrowser/site.css' %}" rel="stylesheet" type="text/css" />
 		{% block styles %}{% endblock %}
 
-		<script type="text/javascript" src="{{STATIC_URL}}jquery-1.11.2.min.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}site.js"></script>
+		<script type="text/javascript" src="{% static 'gitbrowser/jquery-1.11.2.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'gitbrowser/bootstrap/js/bootstrap.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'gitbrowser/site.js' %}"></script>
 		{% block scripts %}{% endblock %}
 		{% for script in extra_scripts %}
 			<script type="text/javascript" src="{{script}}"></script>
@@ -41,19 +43,19 @@
 					</button>
 
 					{% if repository %}
-						<a class="navbar-brand hidden-md hidden-lg" href="{% url 'overview' repository.relative_path %}">{{ repository.name }}</a>
+						<a class="navbar-brand hidden-md hidden-lg" href="{% url 'gitbrowser:overview' repository.relative_path %}">{{ repository.name }}</a>
 					{% endif %}
 				</div>
 
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<div id="navbar">
 						<ul class="nav navbar-nav">
-							<li><a href="{% url 'list' %}" title="Projects">Projects</a></li>
+							<li><a href="{% url 'gitbrowser:list' %}" title="Projects">Projects</a></li>
 							{% if browse_path_items %}
 								<li class="navbar-text hidden-xs">/<li>
 							{% endif %}
 							{% for path, label in browse_path_items %}
-								<li><a href="{% url 'list' path %}" title="Browse {{path}}">{{label}}</a></li>
+								<li><a href="{% url 'gitbrowser:list' path %}" title="Browse {{path}}">{{label}}</a></li>
 								{% if not forloop.last %}
 									<li class="navbar-text hidden-xs">/<li>
 								{% endif %}
@@ -61,9 +63,9 @@
 						</ul>
 						<div class="navbar-right login-logout">
 							{% if user.is_authenticated %}
-								<a href="{% url 'logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
+								<a href="{% url 'gitbrowser:logout' %}" title="Logout" class="btn btn-success navbar-btn" role="button">Logout</a>
 							{% else %}
-								<a href="{% url 'login' %}" title="Login" class="btn btn-success navbar-btn" role="button" rel="nofollow">Login</a>
+								<a href="{% url 'gitbrowser:login' %}" title="Login" class="btn btn-success navbar-btn" role="button" rel="nofollow">Login</a>
 							{% endif %}
 						</div>
 					</div>

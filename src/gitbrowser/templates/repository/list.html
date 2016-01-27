@@ -23,10 +23,10 @@
 								<td>
 									{% if repo.repo %}
 										{% bootstrap_icon "list-alt" %}
-										<a href="{% url 'overview' repo.relative_path %}" title="{{repo.description|default:repo.name}}">{{repo.name}}</a>
+										<a href="{% url 'gitbrowser:overview' repo.relative_path %}" title="{{repo.description|default:repo.name}}">{{repo.name}}</a>
 									{% else %}
 										{% bootstrap_icon "tasks" %}
-										<a href="{% url 'list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
+										<a href="{% url 'gitbrowser:list' repo.relative_path %}" title="{{repo}}">{{repo.name}}</a>
 									{% endif %}
 								</td>
 								<td class="text-muted">{{repo.description}}</td>

@@ -14,7 +14,7 @@
 			<div itemprop="itemListElement">
 				<h3 id="{{tag}}"><span itemprop="name">{{tag}}</span> <small itemprop="description">{{tag.commit.summary}}</small></h3>
 				<p class="text-muted">{{tag.commit.committer}}, {% time_tag tag.commit.committed_datetime %} -
-					Download <a href="{% url 'archive' repository.relative_path tag.name 'gz' %}">.tar.gz</a>
+					Download <a href="{% url 'gitbrowser:archive' repository.relative_path tag.name 'gz' %}">.tar.gz</a>
 				</p>
 			</div>
 			<hr />

@@ -9,20 +9,20 @@
 			{% if repository.description %} <p>{{repository.description}}</p>{% endif %}
 			<ul class="nav nav-sidebar">
 				{% bootstrap_tab 'overview' %}
-					<a href="{% url 'overview' repository.relative_path %}"
+					<a href="{% url 'gitbrowser:overview' repository.relative_path %}"
 					   title="Overview"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Overview</a>
 				{% endbootstrap_tab %}
 
 				{% bootstrap_tab 'source' %}
-					<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref '' %}"
+					<a href="{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref '' %}"
 					   title="Browse source tree of {{repository.name}}"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Source</a>
 				{% endbootstrap_tab %}
 				{% bootstrap_tab 'commits' %}
-					<a href="{% url 'commits' repository.relative_path repository.list_filter_ref %}"
+					<a href="{% url 'gitbrowser:commits' repository.relative_path repository.list_filter_ref %}"
 					   title="Commits for {{repository.name}}"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Commits</a>
 				{% endbootstrap_tab %}
 				{% bootstrap_tab 'tags' %}
-					<a href="{% url 'tags' repository.relative_path %}"
+					<a href="{% url 'gitbrowser:tags' repository.relative_path %}"
 					   title="Tags in {{repository.name}}"><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Tags</a>
 				{% endbootstrap_tab %}
 				{% comment %}
@@ -45,7 +45,7 @@
 					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 						{% if repository.branches|length > 1 %}
 							<li>
-								<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
+								<a href="{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path %}"
 								   class="current-branch"
 								   title="Browse branch {{repository.list_filter_ref}}">{{repository.list_filter_ref}}</a>
 							</li>
@@ -53,7 +53,7 @@
 							{% for branch in repository.branches %}
 								{% if branch.name != repository.list_filter_ref %}
 									<li>
-										<a href="{% url 'browse_ref' repository.relative_path branch repository.list_filter_path %}"
+										<a href="{% url 'gitbrowser:browse_ref' repository.relative_path branch repository.list_filter_path %}"
 												title="Browse branch {{branch}}">{{branch}}</a>
 									</li>
 								{% endif %}

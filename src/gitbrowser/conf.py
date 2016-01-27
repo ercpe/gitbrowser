@@ -20,7 +20,7 @@ CONFIG_DEFAULTS = {
 
 	'features': FEATURE_DEFAULTS,
 
-	'clone_url_templates': ['ssh://git@YOUR-SERVER-NAME/%(path)s'],
+	'clone_url_templates': 'ssh://git@YOUR-SERVER-NAME/%(path)s',
 }
 
 LIST_STYLE_FLAT = "flat"

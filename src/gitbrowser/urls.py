@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 from django.contrib.sitemaps.views import sitemap
+from django.contrib.auth import views as auth_views
 from gitbrowser.views.aux import styles, ContributerAvatarView
 from gitbrowser.views.core import ListRepositoriesView, dev_null, RepositoryOverviewView
 from gitbrowser.views.misc import RepositorySitemap, CommitsFeed, RobotsTxtView, OPMLView, JSONView
@@ -7,15 +8,15 @@ from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
 	RepositoryTreeData, RawBlobView
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^favicon\.ico', dev_null),
 
 	url(r'^_gitbrowser_meta/styles.css$', styles, name='styles'),
 	url(r'^_gitbrowser_meta/avatar/$', ContributerAvatarView.as_view(), name='avatar'),
 	url(r'^_gitbrowser_meta/opml/?$', OPMLView.as_view(), name='opml'),
 	url(r'^_gitbrowser_meta/json/?$', JSONView.as_view(), name='json'),
-	url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
-	url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
+	url(r'^accounts/login/$', auth_views.login, name='login'),
+	url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
 
 	url(r'^(?P<path>.+\.git)/blob/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.*)$', BrowseBlobView.as_view(), name='browse_blob'),
 	url(r'^(?P<path>.+\.git)/raw/(?P<ref>[\w\d\-\.]+)/(?P<repo_path>.+)$', RawBlobView.as_view(), name='raw'),
@@ -37,4 +38,4 @@ urlpatterns = patterns('',
 	url(r'^robots\.txt$', RobotsTxtView.as_view()),
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
 	url(r'^$', ListRepositoriesView.as_view(), name='list'),
-)
+]

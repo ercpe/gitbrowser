@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-from django.core.cache import get_cache
+from django.core.cache import caches
 from django.core.cache.backends.base import InvalidCacheBackendError
 
+g_keyprefix=''
+
+def gen_cache_key(key, config_prefix, version):
+	global g_keyprefix
+	return ':'.join([config_prefix, g_keyprefix, str(version), key])
 
 def gitbrowser_cache(name, keyprefix=''):
+	global g_keyprefix
 
-	def gen_cache_key(key, config_prefix, version):
-		return ':'.join([config_prefix, keyprefix, str(version), key])
+	g_keyprefix = keyprefix
 
 	cache = None
 	try:
-		cache = get_cache(name, **{
-			'KEY_FUNCTION': gen_cache_key
-		})
+		cache = caches[name]
 	except InvalidCacheBackendError:
-		cache = get_cache('default', **{
-			'KEY_FUNCTION': gen_cache_key
-		})
+		cache = caches['default']
 	return cache

@@ -1,4 +1,5 @@
 {% extends "repository_browse_template.html" %}
+{% load staticfiles %}
 {% load gb_tags %}
 {% load humanize %}
 {% load bootstrap3 %}
@@ -6,18 +7,18 @@
 {% block title %}{{repository.name}}/{% if repository.list_filter_path %}{{repository.list_filter_path}}{% else %}Source{% endif %}{% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{STATIC_URL}}polyfills/EventSource.js"></script>
+<script type="text/javascript" src="{% static 'gitbrowser/polyfills/EventSource.js' %}"></script>
 {% endblock %}
 
 
 {% block repository_browse_content %}
 
 	{% if repository.items %}
-		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList" data-url="{% url 'tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}">
+		<table class="table table-condensed tree-table" itemscope itemtype="http://schema.org/ItemList" data-url="{% url 'gitbrowser:tree_data' repository.relative_path repository.list_filter_ref repository.list_filter_path %}">
 			{% if repository.list_filter_path_items|length > 0 %}
 				<tr>
 					<td class="tree-item-name">
-						<a href="{% url 'browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path_items|slice:":-1"|last|first %}"
+						<a href="{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref repository.list_filter_path_items|slice:":-1"|last|first %}"
 									title="Browse {{repository.list_filter_path_items|slice:":-1"|last|last}}">..
 						</a></td>
 					<td colspan="2"></td>
@@ -34,9 +35,9 @@
 						{% endif %}
 						<a href="
 							{% if item.type == 'blob' %}
-								{% url 'browse_blob' repository.relative_path repository.list_filter_ref item.path %}
+								{% url 'gitbrowser:browse_blob' repository.relative_path repository.list_filter_ref item.path %}
 							{% else %}
-								{% url 'browse_ref' repository.relative_path repository.list_filter_ref item.path %}
+								{% url 'gitbrowser:browse_ref' repository.relative_path repository.list_filter_ref item.path %}
 							{% endif %}"
 						   title="Show {{item.name}}" itemprop="name url">
 

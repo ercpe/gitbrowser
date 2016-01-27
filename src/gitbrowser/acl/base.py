@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-from django.core.cache import InvalidCacheBackendError, get_cache
+from django.core.cache import InvalidCacheBackendError, caches
 
 try:
-	acl_cache = get_cache('acl-cache')
+	acl_cache = caches['acl-cache']
 except InvalidCacheBackendError:
-	acl_cache = get_cache('default')
+	acl_cache = caches['default']
 
 
 class ACL(object):

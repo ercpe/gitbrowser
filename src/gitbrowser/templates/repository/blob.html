@@ -4,7 +4,7 @@
 {% load highlight %}
 
 {% block styles %}
-<link href="{% url 'styles' %}" rel="stylesheet">
+<link href="{% url 'gitbrowser:styles' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}{{repository.name}}/{% if repository.path %}{{repository.path}}/{% endif %}{{blob.path}} {% endblock %}
@@ -14,15 +14,15 @@
 		<meta itemprop="codeRepository" content="{{repository.preferred_clone_url}}" />
 		<meta itemprop="sampletype" content="inline code" />
 		<p>
-			{% author_tag blob.latest_commit.author %}, {% time_tag blob.latest_commit.authored_datetime %}:
+			{% autoescape off %}{% author_tag blob.latest_commit.author %}, {% time_tag blob.latest_commit.authored_datetime %}{% endautoescape %}:
 
-			<a itemprop="url" href="{% url 'commit' repository.relative_path blob.latest_commit.hexsha %}" title="{{blob.latest_commit.summary}}">{{blob.latest_commit.summary|truncatewords:20}}</a>
+			<a itemprop="url" href="{% url 'gitbrowser:commit' repository.relative_path blob.latest_commit.hexsha %}" title="{{blob.latest_commit.summary}}">{{blob.latest_commit.summary|truncatewords:20}}</a>
 
-			<span class="pull-right"><a href="{% url 'history' repository.relative_path repository.list_filter_ref blob.path %}">History</a></span>
+			<span class="pull-right"><a href="{% url 'gitbrowser:history' repository.relative_path repository.list_filter_ref blob.path %}">History</a></span>
 		</p>
 
 		{% if blob.can_display %}
-			{% highlight blob.content blob.mime_type blob.name linenos=True %}
+			{% autoescape off %}{% highlight blob.content blob.mime_type blob.name linenos=True %}{% endautoescape %}
 		{% else %}
 			<p>I'm sorry, i cannot display files with <code>{{blob.mime_type}}</code>.</p>
 		{% endif %}
