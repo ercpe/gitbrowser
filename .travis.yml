@@ -6,7 +6,7 @@ python:
 - 3.4
 - 3.5
 - pypy
-- nightly # 3.6
+#- nightly # 3.6  - nightly is currently bit of broken with the third party django apps
 env:
   matrix:
   - DJANGO="1.7"
