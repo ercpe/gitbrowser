@@ -15,7 +15,6 @@ env:
 
 install:
 - pip install -r requirements.txt
-- pip install -r requirements_dev.txt
 - pip install "django==$DJANGO"
 
 #Django version	Python versions
