@@ -1,7 +1,7 @@
 django
 gitpython
 natsort
-bootstrap3
+django-bootstrap3
 pygments
 markdown
 docutils
