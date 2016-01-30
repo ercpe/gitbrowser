@@ -25,7 +25,6 @@ compile_optimized:
 coverage:
 	@python --version
 	coverage erase
-	PYTHONPATH="."
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=".:src" coverage run --source='src' src/manage.py test -v2
 	coverage report
 
