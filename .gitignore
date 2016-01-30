@@ -1,5 +1,6 @@
 .idea/
 *.pyc
+*.pyo
 __pycache__
 
 src/gitbrowser/settings/dev.py
