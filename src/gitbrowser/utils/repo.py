@@ -164,7 +164,7 @@ class GitRepository(object):
 	@property
 	def last_update(self):
 		if self.commit_list:
-			return self.commit_list[0].committed_datetime
+			return self.commit_list[0].committed_datetime()
 
 	@property
 	def list_filter_path_items(self):

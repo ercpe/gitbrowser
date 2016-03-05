@@ -23,7 +23,7 @@ class RepositorySitemap(Sitemap):
 		return reverse('overview', args=(obj.relative_path, ))
 
 	def lastmod(self, obj):
-		return obj.commit_list[0].committed_datetime
+		return obj.commit_list[0].committed_datetime()
 
 
 class GitbrowserFeed(Feed):
