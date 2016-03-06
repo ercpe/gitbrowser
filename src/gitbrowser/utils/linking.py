@@ -25,7 +25,7 @@ class Autolinker(object):
 				commit = repository.get_commit(cid)
 				return format_html('{0}<a href="{1}" title="{2}">{3}</a>',
 					match.group('pre_text'),
-					reverse('commit', args=(repository.relative_path, commit.hexsha)),
+					reverse('gitbrowser:commit', args=(repository.relative_path, commit.hexsha)),
 					commit.summary, cid
 				)
 			except BadName:

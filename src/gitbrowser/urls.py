@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.auth import views as auth_views
 from gitbrowser.views.aux import styles, ContributerAvatarView
@@ -8,7 +8,8 @@ from gitbrowser.views.repository import BrowseTreeView, BrowseBlobView, \
 	CommitDetailView, RepositoryCommitsListView, RepositoryTagsView, RepositoryArchiveView, \
 	RepositoryTreeData, RawBlobView
 
-urlpatterns = [
+
+gitbrowser_patterns = [
 	url(r'^favicon\.ico', dev_null),
 
 	url(r'^_gitbrowser_meta/styles.css$', styles, name='styles'),
@@ -37,5 +38,9 @@ urlpatterns = [
 	}, name='sitemap'),
 	url(r'^robots\.txt$', RobotsTxtView.as_view()),
 	url(r'(?P<path>.*)/$', ListRepositoriesView.as_view(), name='list'),
-	url(r'^$', ListRepositoriesView.as_view(), name='list'),
+	url(r'^$', ListRepositoriesView.as_view(), name='list')
 ]
+
+urlpatterns = patterns('',
+	url('^', include(gitbrowser_patterns, namespace='gitbrowser')),
+)

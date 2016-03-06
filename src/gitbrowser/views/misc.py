@@ -20,7 +20,7 @@ class RepositorySitemap(Sitemap):
 		return list(config.lister.list(AnonymousUser(), flat=True))
 
 	def location(self, obj):
-		return reverse('overview', args=(obj.relative_path, ))
+		return reverse('gitbrowser:overview', args=(obj.relative_path, ))
 
 	def lastmod(self, obj):
 		return obj.commit_list[0].committed_datetime()
@@ -54,13 +54,13 @@ class CommitsFeed(GitbrowserFeed):
 		return "Commits in %s" % obj.name
 
 	def link(self, obj):
-		return reverse('overview', args=(obj.relative_path, ))
+		return reverse('gitbrowser:overview', args=(obj.relative_path, ))
 
 	def items(self, obj):
 		return obj.commit_list
 
 	def item_link(self, item):
-		return reverse('commit', args=(self._obj.relative_path, item.hexsha, ))
+		return reverse('gitbrowser:commit', args=(self._obj.relative_path, item.hexsha, ))
 
 	def item_guid(self, item):
 		return item.hexsha
@@ -95,7 +95,7 @@ class RobotsTxtView(View):
 		if config.allow_anonymous:
 			content += """
 Allow: /
-Sitemap: %s""" % request.build_absolute_uri(reverse('sitemap'))
+Sitemap: %s""" % request.build_absolute_uri(reverse('gitbrowser:sitemap'))
 		else:
 			content += "Disallow: /"
 
@@ -124,8 +124,8 @@ class OPMLView(View):
 			x.attrib['type'] = 'rss'
 			x.attrib['text'] = repository.name
 			x.attrib['title'] = repository.name
-			x.attrib['xmlUrl'] = request.build_absolute_uri(reverse('feed', args=(repository.relative_path, )))
-			x.attrib['htmlUrl'] = request.build_absolute_uri(reverse('overview', args=(repository.relative_path, )))
+			x.attrib['xmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:feed', args=(repository.relative_path, )))
+			x.attrib['htmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:overview', args=(repository.relative_path, )))
 
 		tree = et.ElementTree(opml)
 		response = HttpResponse(content_type='application/xml')
@@ -143,14 +143,14 @@ class JSONView(View):
 		l = [{
 				'title': repo.relative_path,
 				'description': repo.description,
-				'html': request.build_absolute_uri(reverse('overview', args=(repo.relative_path, ))),
+				'html': request.build_absolute_uri(reverse('gitbrowser:overview', args=(repo.relative_path, ))),
 				'code': repo.preferred_clone_url,
-				'feed': request.build_absolute_uri(reverse('feed', args=(repo.relative_path, ))),
-				'readme': request.build_absolute_uri(reverse('raw', args=(
+				'feed': request.build_absolute_uri(reverse('gitbrowser:feed', args=(repo.relative_path, ))),
+				'readme': request.build_absolute_uri(reverse('gitbrowser:raw', args=(
 					repo.relative_path, repo.current_branch, repo.readme_item
 				))) if repo.readme_item else None,
-				'tags': request.build_absolute_uri(reverse('tags', args=(repo.relative_path, ))) if repo.tags else None,
-				'commits': request.build_absolute_uri(reverse('commits', args=(repo.relative_path, repo.current_branch)))
+				'tags': request.build_absolute_uri(reverse('gitbrowser:tags', args=(repo.relative_path, ))) if repo.tags else None,
+				'commits': request.build_absolute_uri(reverse('gitbrowser:commits', args=(repo.relative_path, repo.current_branch)))
 			} for repo in config.lister.list(request.user, flat=True)
 		]
 		return HttpResponse(json.dumps(l), content_type='application/json')

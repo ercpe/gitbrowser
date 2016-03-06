@@ -32,7 +32,7 @@ class RepositoryTreeData(RepositoryMixin, View):
 					commit = self.repository.get_latest_commit(item)
 					yield "data: %s\n\n" % json.dumps({
 						'summary_link': Template('''<a class="text-muted"
-									href="{% url 'commit' repository.relative_path commit.hexsha %}"
+									href="{% url 'gitbrowser:commit' repository.relative_path commit.hexsha %}"
 									title="{{commit.summary}}">{{commit.summary}}</a>''').render(Context({
 							'repository': self.repository,
 							'commit': commit
@@ -122,7 +122,7 @@ class RepositoryCommitsListView(JSONContentNegotiationMixin, RepositoryMixin, Te
 				try:
 					yield {
 						'summary': commit.summary,
-						'link': self.request.build_absolute_uri(reverse('commit', args=(
+						'link': self.request.build_absolute_uri(reverse('gitbrowser:commit', args=(
 							self.repository.relative_path,
 							commit.hexsha
 						))),
@@ -146,7 +146,7 @@ class RepositoryTagsView(JSONContentNegotiationMixin, RepositoryMixin, TemplateV
 				try:
 					yield {
 						'name': x.name,
-						'archive': self.request.build_absolute_uri(reverse('archive', args=(
+						'archive': self.request.build_absolute_uri(reverse('gitbrowser:archive', args=(
 							self.repository.relative_path,
 							x.name,
 							'gz'
