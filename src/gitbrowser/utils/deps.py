@@ -11,6 +11,8 @@ class PkgResourceWrapper(object):
 	def __str__(self):
 		return str(self.requirement)
 
+
 class PythonRequirements(object):
+
 	def parse(self, content):
-		return [PkgResourceWrapper(req) for req in parse_requirements(content)]
+		return [PkgResourceWrapper(req) for req in parse_requirements('\n'.join([line for line in content.splitlines() if not line.startswith('-e')]))]
