@@ -28,4 +28,12 @@ coverage:
 	DJANGO_SETTINGS_MODULE=tests.settings PYTHONPATH=".:src" coverage run --source='src' src/manage.py test -v2
 	coverage report
 
+sonar:
+	/usr/local/bin/sonar-scanner/bin/sonar-scanner
+
+clean:
+	find -name "*.py?" -or -name "coverage.xml" -or -name "testresults.xml" -delete
+	rm -fr htmlcov dist *.egg-info
+
 travis: compile compile_optimized test_default_python coverage
+jenkins: travis sonar
