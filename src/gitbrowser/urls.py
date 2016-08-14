@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.auth import views as auth_views
 from gitbrowser.views.aux import styles, ContributerAvatarView
