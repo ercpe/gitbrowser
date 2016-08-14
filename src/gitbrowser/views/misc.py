@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
+import logging
+
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sitemaps import Sitemap
 from django.contrib.syndication.views import Feed
@@ -140,17 +142,21 @@ class JSONView(View):
 		return super(JSONView, self).dispatch(request, *args, **kwargs)
 
 	def get(self, request):
-		l = [{
-				'title': repo.relative_path,
-				'description': repo.description,
-				'html': request.build_absolute_uri(reverse('gitbrowser:overview', args=(repo.relative_path, ))),
-				'code': repo.preferred_clone_url,
-				'feed': request.build_absolute_uri(reverse('gitbrowser:feed', args=(repo.relative_path, ))),
-				'readme': request.build_absolute_uri(reverse('gitbrowser:raw', args=(
-					repo.relative_path, repo.current_branch, repo.readme_item
-				))) if repo.readme_item else None,
-				'tags': request.build_absolute_uri(reverse('gitbrowser:tags', args=(repo.relative_path, ))) if repo.tags else None,
-				'commits': request.build_absolute_uri(reverse('gitbrowser:commits', args=(repo.relative_path, repo.current_branch)))
-			} for repo in config.lister.list(request.user, flat=True)
-		]
+		l = []
+		for repo in config.lister.list(request.user, flat=True):
+			try:
+				l.append({
+					'title': repo.relative_path,
+					'description': repo.description,
+					'html': request.build_absolute_uri(reverse('gitbrowser:overview', args=(repo.relative_path, ))),
+					'code': repo.preferred_clone_url,
+					'feed': request.build_absolute_uri(reverse('gitbrowser:feed', args=(repo.relative_path, ))),
+					'readme': request.build_absolute_uri(reverse('gitbrowser:raw', args=(
+						repo.relative_path, repo.current_branch, repo.readme_item
+					))) if repo.readme_item else None,
+					'tags': request.build_absolute_uri(reverse('gitbrowser:tags', args=(repo.relative_path, ))) if repo.tags else None,
+					'commits': request.build_absolute_uri(reverse('gitbrowser:commits', args=(repo.relative_path, repo.current_branch)))
+				})
+			except:
+				logging.exception("Error creating JSON fragment for '%s'", repo)
 		return HttpResponse(json.dumps(l), content_type='application/json')
