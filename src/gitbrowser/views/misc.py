@@ -18,145 +18,145 @@ import xml.etree.cElementTree as et
 
 class RepositorySitemap(Sitemap):
 
-	def items(self):
-		return list(config.lister.list(AnonymousUser(), flat=True))
+    def items(self):
+        return list(config.lister.list(AnonymousUser(), flat=True))
 
-	def location(self, obj):
-		return reverse('gitbrowser:overview', args=(obj.relative_path, ))
+    def location(self, obj):
+        return reverse('gitbrowser:overview', args=(obj.relative_path, ))
 
-	def lastmod(self, obj):
-		return obj.commit_list[0].committed_datetime()
+    def lastmod(self, obj):
+        return obj.commit_list[0].committed_datetime()
 
 
 class GitbrowserFeed(Feed):
-	feed_type = Atom1Feed
+    feed_type = Atom1Feed
 
-	def __init__(self, *args, **kwargs):
-		super(GitbrowserFeed, self).__init__(*args, **kwargs)
-		self._obj = None
+    def __init__(self, *args, **kwargs):
+        super(GitbrowserFeed, self).__init__(*args, **kwargs)
+        self._obj = None
 
-	def get_object(self, request, *args, **kwargs):
-		repositories = list(config.lister.list(AnonymousUser(), path=kwargs['path']))
-		if not repositories:
-			raise Http404
+    def get_object(self, request, *args, **kwargs):
+        repositories = list(config.lister.list(AnonymousUser(), path=kwargs['path']))
+        if not repositories:
+            raise Http404
 
-		if len(repositories) > 1:
-			raise Exception("more than one repository found for %s" % kwargs['path'])
+        if len(repositories) > 1:
+            raise Exception("more than one repository found for %s" % kwargs['path'])
 
-		self._obj = repositories[0]
-		return self._obj
+        self._obj = repositories[0]
+        return self._obj
 
 
 class CommitsFeed(GitbrowserFeed):
 
-	def title(self, obj):
-		return self.description(obj)
+    def title(self, obj):
+        return self.description(obj)
 
-	def description(self, obj):
-		return "Commits in %s" % obj.name
+    def description(self, obj):
+        return "Commits in %s" % obj.name
 
-	def link(self, obj):
-		return reverse('gitbrowser:overview', args=(obj.relative_path, ))
+    def link(self, obj):
+        return reverse('gitbrowser:overview', args=(obj.relative_path, ))
 
-	def items(self, obj):
-		return obj.commit_list
+    def items(self, obj):
+        return obj.commit_list
 
-	def item_link(self, item):
-		return reverse('gitbrowser:commit', args=(self._obj.relative_path, item.hexsha, ))
+    def item_link(self, item):
+        return reverse('gitbrowser:commit', args=(self._obj.relative_path, item.hexsha, ))
 
-	def item_guid(self, item):
-		return item.hexsha
+    def item_guid(self, item):
+        return item.hexsha
 
-	def item_guid_is_permalink(self, item):
-		return False
+    def item_guid_is_permalink(self, item):
+        return False
 
-	def item_author_name(self, item):
-		return item.committer.name
+    def item_author_name(self, item):
+        return item.committer.name
 
-	def item_author_email(self, item):
-		return item.committer.email
+    def item_author_email(self, item):
+        return item.committer.email
 
-	def item_title(self, item):
-		return "[%s] %s" % (item.shorthexsha(), item.summary)
+    def item_title(self, item):
+        return "[%s] %s" % (item.shorthexsha(), item.summary)
 
-	def item_pubdate(self, item):
-		return item.committed_datetime()
+    def item_pubdate(self, item):
+        return item.committed_datetime()
 
-	def item_description(self, item):
-		return render_to_string('feeds/commit.html', {
-			'styles': HtmlFormatter().get_style_defs('.highlight'),
-			'commit': item
-		})
+    def item_description(self, item):
+        return render_to_string('feeds/commit.html', {
+            'styles': HtmlFormatter().get_style_defs('.highlight'),
+            'commit': item
+        })
 
 
 class RobotsTxtView(View):
 
-	def get(self, request):
-		content = "User-agent: *\nDisallow: /accounts/"
+    def get(self, request):
+        content = "User-agent: *\nDisallow: /accounts/"
 
-		if config.allow_anonymous:
-			content += """
+        if config.allow_anonymous:
+            content += """
 Allow: /
 Sitemap: %s""" % request.build_absolute_uri(reverse('gitbrowser:sitemap'))
-		else:
-			content += "Disallow: /"
+        else:
+            content += "Disallow: /"
 
-		return HttpResponse(content, content_type='text/plain')
+        return HttpResponse(content, content_type='text/plain')
 
 
 class OPMLView(View):
-	@method_decorator(cache_page(15 * 60 * 60))
-	def dispatch(self, request, *args, **kwargs):
-		return super(OPMLView, self).dispatch(request, *args, **kwargs)
+    @method_decorator(cache_page(15 * 60 * 60))
+    def dispatch(self, request, *args, **kwargs):
+        return super(OPMLView, self).dispatch(request, *args, **kwargs)
 
-	def get(self, request):
+    def get(self, request):
 
-		opml = et.Element("opml")
-		opml.attrib['version'] = '1.0'
+        opml = et.Element("opml")
+        opml.attrib['version'] = '1.0'
 
-		head = et.SubElement(opml, 'head')
-		et.SubElement(head, 'title').text = 'Git Repositories'
+        head = et.SubElement(opml, 'head')
+        et.SubElement(head, 'title').text = 'Git Repositories'
 
-		body = et.SubElement(opml, 'body')
-		outline = et.SubElement(body, 'outline')
-		outline.attrib['text'] = 'RSS feeds'
+        body = et.SubElement(opml, 'body')
+        outline = et.SubElement(body, 'outline')
+        outline.attrib['text'] = 'RSS feeds'
 
-		for repository in config.lister.list(request.user, flat=True):
-			x = et.SubElement(outline, 'outline')
-			x.attrib['type'] = 'rss'
-			x.attrib['text'] = repository.name
-			x.attrib['title'] = repository.name
-			x.attrib['xmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:feed', args=(repository.relative_path, )))
-			x.attrib['htmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:overview', args=(repository.relative_path, )))
+        for repository in config.lister.list(request.user, flat=True):
+            x = et.SubElement(outline, 'outline')
+            x.attrib['type'] = 'rss'
+            x.attrib['text'] = repository.name
+            x.attrib['title'] = repository.name
+            x.attrib['xmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:feed', args=(repository.relative_path, )))
+            x.attrib['htmlUrl'] = request.build_absolute_uri(reverse('gitbrowser:overview', args=(repository.relative_path, )))
 
-		tree = et.ElementTree(opml)
-		response = HttpResponse(content_type='application/xml')
-		tree.write(response)
-		return response
+        tree = et.ElementTree(opml)
+        response = HttpResponse(content_type='application/xml')
+        tree.write(response)
+        return response
 
 
 class JSONView(View):
 
-	@method_decorator(cache_page(15 * 60 * 60))
-	def dispatch(self, request, *args, **kwargs):
-		return super(JSONView, self).dispatch(request, *args, **kwargs)
+    @method_decorator(cache_page(15 * 60 * 60))
+    def dispatch(self, request, *args, **kwargs):
+        return super(JSONView, self).dispatch(request, *args, **kwargs)
 
-	def get(self, request):
-		l = []
-		for repo in config.lister.list(request.user, flat=True):
-			try:
-				l.append({
-					'title': repo.relative_path,
-					'description': repo.description,
-					'html': request.build_absolute_uri(reverse('gitbrowser:overview', args=(repo.relative_path, ))),
-					'code': repo.preferred_clone_url,
-					'feed': request.build_absolute_uri(reverse('gitbrowser:feed', args=(repo.relative_path, ))),
-					'readme': request.build_absolute_uri(reverse('gitbrowser:raw', args=(
-						repo.relative_path, repo.current_branch, repo.readme_item
-					))) if repo.readme_item else None,
-					'tags': request.build_absolute_uri(reverse('gitbrowser:tags', args=(repo.relative_path, ))) if repo.tags else None,
-					'commits': request.build_absolute_uri(reverse('gitbrowser:commits', args=(repo.relative_path, repo.current_branch)))
-				})
-			except:
-				logging.exception("Error creating JSON fragment for '%s'", repo)
-		return HttpResponse(json.dumps(l), content_type='application/json')
+    def get(self, request):
+        l = []
+        for repo in config.lister.list(request.user, flat=True):
+            try:
+                l.append({
+                    'title': repo.relative_path,
+                    'description': repo.description,
+                    'html': request.build_absolute_uri(reverse('gitbrowser:overview', args=(repo.relative_path, ))),
+                    'code': repo.preferred_clone_url,
+                    'feed': request.build_absolute_uri(reverse('gitbrowser:feed', args=(repo.relative_path, ))),
+                    'readme': request.build_absolute_uri(reverse('gitbrowser:raw', args=(
+                        repo.relative_path, repo.current_branch, repo.readme_item
+                    ))) if repo.readme_item else None,
+                    'tags': request.build_absolute_uri(reverse('gitbrowser:tags', args=(repo.relative_path, ))) if repo.tags else None,
+                    'commits': request.build_absolute_uri(reverse('gitbrowser:commits', args=(repo.relative_path, repo.current_branch)))
+                })
+            except:
+                logging.exception("Error creating JSON fragment for '%s'", repo)
+        return HttpResponse(json.dumps(l), content_type='application/json')
