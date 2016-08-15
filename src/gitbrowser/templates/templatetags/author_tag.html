@@ -1,0 +1,6 @@
+<span {{ itemprops }} itemscope itemtype="http://schema.org/Person" id="author_{{ email_slug }}">
+    {% if avatar %}
+        <img src="{% url 'gitbrowser:avatar' %}?email={{ email }}&size={{ avatar_size }}" itemprop="image" title="{{ author_name }}" class="avatar-small" />
+    {%  endif %}
+    <a href="mailto:{{ email }}"><span itemprop="name">{{ author_name }}</span></a><meta itemprop="email" content="{{ email }}" />
+</span>

@@ -6,6 +6,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.template.base import TemplateSyntaxError
 from django.template.defaultfilters import date, slugify
+from django.template.loader import render_to_string
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
 from gitbrowser.utils.linking import Autolinker
@@ -27,29 +28,16 @@ def time_tag(datetime, label=None, itemprop=""):
 
 
 @register.simple_tag
-def author_tag(author, with_avatar=True, avatar_size=16, itemprop=['author']):
-    tpl = """<span %(itemprops)s itemscope itemtype="http://schema.org/Person" id="author_%(email_slug)s">
-            %(avatar_code)s
-            <a href="mailto:%(email)s"><span itemprop="name">%(author)s</span></a><meta itemprop="email" content="%(email)s" /></span>"""
-
-    avatar_code = ""
-    if with_avatar:
-        avatar_code = '<img src="%(url)s?email=%(email)s&size=%(avatar_size)s" itemprop="image" title="%(author)s" class="avatar-small" />' % {
-            'url': reverse('gitbrowser:avatar'),
-            'email': author.email,
-            'avatar_size': avatar_size,
-            'author': author
-        }
-
-    markup = tpl % {
-        'avatar_code': avatar_code,
+def author_tag(author, with_avatar=True, avatar_size=16, itemprop=None):
+    itemprops = itemprop or ['author']
+    return mark_safe(render_to_string('templatetags/author_tag.html', {
         'email': author.email,
         'email_slug': slugify(author.email),
-        'author': author.name,
-        'itemprops': ('itemprop="%s" ' % ' '.join(itemprop)) if itemprop else '',
-    }
-    return markup
-
+        'author_name': author.name,
+        'itemprops': ('itemprop="%s" ' % ' '.join(itemprops)) if itemprops else '',
+        'avatar': with_avatar,
+        'avatar_size': avatar_size,
+    }))
 
 @register.tag('bootstrap_tab')
 def do_bootstrap_tab(parser, token):
