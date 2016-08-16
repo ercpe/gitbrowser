@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
-from gzip import GzipFile
 import json
 import logging
 import urllib
-from django.core.urlresolvers import reverse
-from django.utils.http import http_date
-from django.core.paginator import PageNotAnInteger, Paginator
+from gzip import GzipFile
+
 from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger, Paginator
+from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, HttpResponse
 from django.template.base import Template
 from django.template.context import Context
+from django.utils.http import http_date
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
+
 from gitbrowser.conf import config, COMMIT_LIST_DEFAULT
 from gitbrowser.templatetags.gb_tags import time_tag
 from gitbrowser.views.mixins import RepositoryMixin, JSONContentNegotiationMixin
@@ -40,7 +42,7 @@ class RepositoryTreeData(RepositoryMixin, View):
                         'commit_datetime': time_tag(commit.authored_datetime()),
                         'obj': item.hexsha
                     })
-                except Exception as ex:
+                except:
                     logging.exception("Caught exception while fetching latest commit for %s in %s" % (item, self.repository))
         return StreamingHttpResponse(_inner(), content_type='text/event-stream')
 
@@ -131,7 +133,7 @@ class RepositoryCommitsListView(JSONContentNegotiationMixin, RepositoryMixin, Te
                         'committer_name': commit.committer.name,
                         'committer_email': commit.committer.email
                     }
-                except Exception as ex:
+                except:
                     logging.exception("Failed to convert %s" % commit)
         return json.dumps(list(_aa()))
 
@@ -154,7 +156,7 @@ class RepositoryTagsView(JSONContentNegotiationMixin, RepositoryMixin, TemplateV
                         'timestamp': x.commit.committed_date,
                         'description': x.commit.summary
                     }
-                except Exception as ex:
+                except:
                     logging.exception("Failed to convert %s" % x)
         return json.dumps(list(_aa()))
 

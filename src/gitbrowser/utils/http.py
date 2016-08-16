@@ -24,4 +24,3 @@ def bestof(accept_header, *args):
     for ct, q in accepted_content_types:
         if ct in wanted_content_types:
             return ct
-

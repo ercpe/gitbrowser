@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-import urlparse
 
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from django import template
-from django.core.urlresolvers import reverse
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.template.base import TemplateSyntaxError
 from django.template.defaultfilters import date, slugify
 from django.template.loader import render_to_string
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
+
 from gitbrowser.utils.linking import Autolinker
 
 register = template.Library()

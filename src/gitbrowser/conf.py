@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import logging
 import os
-from django.conf import settings
 
+from django.conf import settings
 
 FEATURE_DEFAULTS = {
     'gravatar': True,

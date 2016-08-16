@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
-from django.views.generic.base import TemplateView, View, ContextMixin
+from django.views.generic.base import TemplateView
+
 from gitbrowser.conf import config, LIST_STYLE_FLAT, LIST_STYLE_HIERARCHICAL, LIST_STYLE_TREE
 from gitbrowser.views.mixins import BreadcrumbMixin, RepositoryMixin
 

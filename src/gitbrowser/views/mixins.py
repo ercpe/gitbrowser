@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
-import logging
+
 from django.http import Http404, HttpResponse
+
 from gitbrowser.conf import config
 from gitbrowser.utils.http import bestof
 from gitbrowser.utils.misc import generate_breadcrumb_path
